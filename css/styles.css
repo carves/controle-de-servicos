@@ -140,6 +140,42 @@ html, body {
   background: var(--preto);
 }
 
+/* ========== NAV ENTRE MÓDULOS ========== */
+.nav-modulos {
+  display: flex;
+  gap: 8px;
+  padding: 10px 20px;
+  background: var(--preto-card);
+  border-bottom: 1px solid var(--preto-borda);
+}
+
+.nav-modulo-btn {
+  padding: 8px 16px;
+  border-radius: var(--raio);
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--texto-secundario);
+  text-decoration: none;
+  transition: var(--trans);
+  border: 1px solid transparent;
+}
+
+.nav-modulo-btn:hover {
+  background: var(--preto-surface);
+  color: var(--texto-primario);
+}
+
+.nav-modulo-ativo {
+  background: var(--grad-esmeralda);
+  color: #fff;
+  font-weight: 600;
+}
+
+.nav-modulo-ativo:hover {
+  background: var(--grad-esmeralda);
+  color: #fff;
+}
+
 /* ========== PAINEL DE RESUMO ========== */
 .resumo {
   background: var(--preto-card);
