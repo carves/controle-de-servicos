@@ -36,6 +36,7 @@ const AppObras = (function () {
 
     const html = estado.obras.map(obra => `
       <div class="card-obra-link" data-id="${obra.id}">
+        <button class="btn-editar-card" data-acao="editar" data-id="${obra.id}" title="Editar obra">✏️</button>
         <div class="card-foto" style="background-image: url('${Utils.escapeHtml(obra.foto || '')}'); background-color: var(--preto-surface);">
           ${!obra.foto ? '<span class="foto-placeholder">🏗️</span>' : ''}
         </div>
