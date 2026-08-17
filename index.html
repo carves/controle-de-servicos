@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Sistema de controle de ordens de serviço com dashboard em tempo real.">
+  <title>Controle de Serviços</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+
+<div class="container">
+  <!-- SIDEBAR -->
+  <div class="sidebar">
+    <h1>📋 Dashboard</h1>
+  </div>
+
+  <!-- MAIN CONTENT -->
+  <div class="main">
+    <!-- RESUMO -->
+    <div id="resumo" class="resumo">
+      <div class="resumo-item"><strong>—</strong> Carregando...</div>
+    </div>
+
+    <!-- TOOLBAR (Busca, Filtros, Ações) -->
+    <div class="toolbar">
+      <button id="btn-novo" class="btn btn-prim">➕ Novo Serviço</button>
+      <input type="text" id="search-input" placeholder="🔍 Buscar por cliente, telefone, endereço...">
+      <div class="filtros">
+        <button class="filtro-btn" data-filtro="todos">Todos</button>
+        <button class="filtro-btn" data-filtro="novo">Novo</button>
+        <button class="filtro-btn" data-filtro="orcamento">Orçamento</button>
+        <button class="filtro-btn" data-filtro="visita">Visita</button>
+        <button class="filtro-btn" data-filtro="execucao">Execução</button>
+        <button class="filtro-btn" data-filtro="concluido">Concluído</button>
+        <button class="filtro-btn" data-filtro="cancelado">Cancelado</button>
+        <button class="filtro-btn" data-filtro="pago">Pago</button>
+        <button class="filtro-btn" data-filtro="naopago">Não pago</button>
+      </div>
+      <button id="btn-exportar" class="btn">📥 Exportar</button>
+      <button id="btn-imprimir" class="btn">🖨️ Imprimir</button>
+    </div>
+
+    <!-- TABELA (SCROLL) -->
+    <div class="tabela-scroll">
+      <div id="tabela-container">
+        <div class="no-data">Carregando...</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL DO FORMULÁRIO -->
+<div id="form-modal"></div>
+
+<!-- SCRIPTS -->
+<script src="js/supabase-config.js"></script>
+<script src="js/config.js"></script>
+<script src="js/utils.js"></script>
+<script src="js/store.js"></script>
+<script src="js/app.js"></script>
+
+</body>
+</html>

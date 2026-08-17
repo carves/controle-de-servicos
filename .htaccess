@@ -1,0 +1,11 @@
+# Permite acesso apenas via link direto
+# Bloqueia acesso direto a arquivos de dados
+
+# Permite listagem de diretório desativada
+Options -Indexes
+
+# Permite acesso normal aos arquivos
+# (comentado porque queremos permitir acesso)
+# <FilesMatch "dados\.txt">
+#   Deny from all
+# </FilesMatch>

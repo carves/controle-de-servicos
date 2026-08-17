@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Gestão de Obras - Diário de Bordo, Cronograma e Materiais">
+  <title>Gestão de Obras</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="css/styles.css">
+  <link rel="stylesheet" href="css/obras.css">
+</head>
+<body>
+
+<div class="container-obras">
+  <!-- HEADER COM NAV -->
+  <div class="header-obras">
+    <div class="header-titulo">
+      <h1>🏗️ Gestão de Obras</h1>
+      <p>Diário de Bordo, Cronograma e Materiais</p>
+    </div>
+    <button id="btn-nova-obra" class="btn btn-prim">➕ Nova Obra</button>
+  </div>
+
+  <!-- LISTAGEM DE OBRAS (INICIAL) -->
+  <div id="lista-obras-container" class="lista-obras-container">
+    <div class="loading">Carregando obras...</div>
+  </div>
+
+  <!-- GALERIA DE OBRAS (ALTERNATIVA) -->
+  <div id="galeria-obras-container" class="galeria-obras-container" style="display: none;"></div>
+
+  <!-- PAINEL DE OBRA (ABERTO) -->
+  <div id="painel-obra-container" class="painel-obra-container" style="display: none;">
+    <div class="painel-header">
+      <button id="btn-voltar-obras" class="btn-voltar">← Voltar</button>
+      <div class="painel-titulo">
+        <h2 id="painel-nome-obra"></h2>
+        <p id="painel-endereco-obra"></p>
+      </div>
+      <div class="painel-status">
+        <span id="painel-status-badge" class="status-badge"></span>
+      </div>
+    </div>
+
+    <!-- ABAS DE CONTEÚDO -->
+    <div class="abas-obra">
+      <button class="aba-btn aba-ativa" data-aba="diario">📖 Diário</button>
+      <button class="aba-btn" data-aba="cronograma">📅 Cronograma</button>
+      <button class="aba-btn" data-aba="atividades">✓ Atividades</button>
+      <button class="aba-btn" data-aba="materiais">📦 Materiais</button>
+      <button class="aba-btn" data-aba="resumo">📊 Resumo</button>
+    </div>
+
+    <!-- CONTEÚDO DAS ABAS -->
+    <div class="abas-conteudo">
+      <!-- ABA: DIÁRIO DE BORDO -->
+      <div id="aba-diario" class="aba-conteudo aba-ativa">
+        <div class="secao-header">
+          <h3>📖 Diário de Bordo</h3>
+          <button id="btn-nova-anotacao" class="btn btn-pequeno">➕ Novo Registro</button>
+        </div>
+        <div id="diario-lista" class="diario-lista"></div>
+      </div>
+
+      <!-- ABA: CRONOGRAMA -->
+      <div id="aba-cronograma" class="aba-conteudo">
+        <div class="secao-header">
+          <h3>📅 Cronograma da Obra</h3>
+          <button id="btn-nova-etapa" class="btn btn-pequeno">➕ Nova Etapa</button>
+        </div>
+        <div id="cronograma-lista" class="cronograma-lista"></div>
+      </div>
+
+      <!-- ABA: ATIVIDADES -->
+      <div id="aba-atividades" class="aba-conteudo">
+        <div class="secao-header">
+          <h3>✓ Atividades</h3>
+          <button id="btn-nova-atividade" class="btn btn-pequeno">➕ Nova Atividade</button>
+        </div>
+        <div id="atividades-lista" class="atividades-lista"></div>
+      </div>
+
+      <!-- ABA: MATERIAIS -->
+      <div id="aba-materiais" class="aba-conteudo">
+        <div class="secao-header">
+          <h3>📦 Materiais</h3>
+          <button id="btn-novo-material" class="btn btn-pequeno">➕ Novo Material</button>
+        </div>
+        <div id="materiais-lista" class="materiais-lista"></div>
+      </div>
+
+      <!-- ABA: RESUMO -->
+      <div id="aba-resumo" class="aba-conteudo">
+        <div class="resumo-cards">
+          <div class="card-resumo">
+            <h4>Progresso da Obra</h4>
+            <div id="resumo-progresso" class="progresso-bar"></div>
+          </div>
+          <div class="card-resumo">
+            <h4>Status das Atividades</h4>
+            <div id="resumo-atividades"></div>
+          </div>
+          <div class="card-resumo">
+            <h4>Materiais</h4>
+            <div id="resumo-materiais"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL DE FORMULÁRIO -->
+<div id="form-modal-obras"></div>
+
+<!-- SCRIPTS -->
+<script src="js/supabase-config.js"></script>
+<script src="js/config.js"></script>
+<script src="js/utils.js"></script>
+<script src="js/store.js"></script>
+<script src="js/store-obras.js"></script>
+<script src="js/app-obras.js"></script>
+
+</body>
+</html>

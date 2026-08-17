@@ -1,0 +1,773 @@
+/* =========================================================================
+   obras.css — Estilos para Gestão de Obras
+   ========================================================================= */
+
+.container-obras {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  background: var(--preto);
+  color: var(--texto-primario);
+}
+
+/* ===== HEADER ===== */
+.header-obras {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20px;
+  background: var(--grad-header);
+  border-bottom: 1px solid var(--preto-borda);
+  box-shadow: var(--sombra-sm);
+}
+
+.header-titulo h1 {
+  font-size: 28px;
+  margin-bottom: 4px;
+  color: var(--esmeralda-claro);
+}
+
+.header-titulo p {
+  font-size: 13px;
+  color: var(--texto-secundario);
+}
+
+/* ===== GRID DE OBRAS ===== */
+.lista-obras-container {
+  flex: 1;
+  overflow-y: auto;
+  padding: 20px;
+}
+
+.galeria-obras {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 20px;
+}
+
+.card-obra-link {
+  position: relative;
+  height: 380px;
+  background: var(--preto-card);
+  border: 2px solid var(--preto-borda);
+  border-radius: var(--raio-lg);
+  overflow: hidden;
+  cursor: pointer;
+  transition: var(--trans);
+  display: flex;
+  flex-direction: column;
+  box-shadow: var(--sombra-md);
+}
+
+.card-obra-link:hover {
+  border-color: var(--esmeralda);
+  box-shadow: var(--sombra-esm);
+  transform: translateY(-4px);
+}
+
+.card-foto {
+  height: 160px;
+  background-size: cover;
+  background-position: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  overflow: hidden;
+  background-color: var(--preto-surface);
+}
+
+.foto-placeholder {
+  font-size: 64px;
+  opacity: 0.5;
+}
+
+.card-info {
+  flex: 1;
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  background: var(--preto-card);
+}
+
+.card-info h3 {
+  margin: 0;
+  font-size: 16px;
+  color: var(--esmeralda-claro);
+  font-weight: 600;
+  line-height: 1.3;
+}
+
+.card-cliente,
+.card-endereco,
+.card-arquiteto {
+  font-size: 12px;
+  color: var(--texto-secundario);
+  margin: 0;
+  line-height: 1.4;
+}
+
+.card-cliente strong,
+.card-endereco strong,
+.card-arquiteto strong {
+  color: var(--texto-primario);
+}
+
+.card-endereco {
+  flex: 1;
+}
+
+.card-status-mini {
+  display: flex;
+  gap: 6px;
+  margin-top: 8px;
+  padding-top: 8px;
+  border-top: 1px solid var(--preto-borda);
+}
+
+.card-status-mini .status-badge {
+  font-size: 11px;
+  padding: 4px 8px;
+}
+
+.card-overlay {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  padding: 16px;
+  background: linear-gradient(180deg, transparent 0%, rgba(0,0,0,0.8) 100%);
+  display: flex;
+  align-items: flex-end;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.card-obra-link:hover .card-overlay {
+  opacity: 1;
+}
+
+.btn-entrar {
+  width: 100%;
+  padding: 10px 16px;
+  background: var(--esmeralda);
+  color: var(--preto);
+  border: none;
+  border-radius: var(--raio-sm);
+  font-weight: 600;
+  cursor: pointer;
+  font-size: 13px;
+  transition: var(--trans);
+}
+
+.btn-entrar:hover {
+  background: var(--esmeralda-claro);
+}
+
+.no-data {
+  text-align: center;
+  padding: 60px 20px;
+  color: var(--texto-secundario);
+}
+
+.no-data p {
+  font-size: 18px;
+  margin-bottom: 20px;
+}
+
+/* ===== PAINEL DE OBRA ===== */
+.painel-obra-container {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  gap: 0;
+}
+
+.painel-header {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 16px 20px;
+  background: var(--grad-header);
+  border-bottom: 1px solid var(--preto-borda);
+  box-shadow: var(--sombra-sm);
+}
+
+.btn-voltar {
+  padding: 8px 12px;
+  background: var(--preto-surface);
+  border: 1px solid var(--preto-borda2);
+  color: var(--texto-primario);
+  border-radius: var(--raio-sm);
+  cursor: pointer;
+  transition: var(--trans);
+}
+
+.btn-voltar:hover {
+  background: var(--esmeralda);
+  border-color: var(--esmeralda);
+}
+
+.painel-titulo {
+  flex: 1;
+}
+
+.painel-titulo h2 {
+  font-size: 20px;
+  margin: 0;
+  color: var(--esmeralda-claro);
+}
+
+.painel-titulo p {
+  font-size: 12px;
+  color: var(--texto-secundario);
+  margin: 2px 0 0 0;
+}
+
+/* ===== ABAS ===== */
+.abas-obra {
+  display: flex;
+  gap: 8px;
+  padding: 12px 20px;
+  border-bottom: 1px solid var(--preto-borda);
+  background: var(--preto-surface);
+  overflow-x: auto;
+  flex-shrink: 0;
+}
+
+.aba-btn {
+  padding: 8px 16px;
+  background: transparent;
+  border: 1px solid var(--preto-borda2);
+  color: var(--texto-secundario);
+  border-radius: var(--raio-sm);
+  cursor: pointer;
+  font-size: 13px;
+  font-weight: 500;
+  white-space: nowrap;
+  transition: var(--trans);
+}
+
+.aba-btn:hover {
+  border-color: var(--esmeralda);
+  color: var(--esmeralda);
+}
+
+.aba-btn.aba-ativa {
+  background: var(--esmeralda);
+  border-color: var(--esmeralda);
+  color: var(--preto);
+}
+
+/* ===== CONTEÚDO DAS ABAS ===== */
+.abas-conteudo {
+  flex: 1;
+  overflow-y: auto;
+  padding: 20px;
+}
+
+.aba-conteudo {
+  display: none;
+}
+
+.aba-conteudo.aba-ativa {
+  display: block;
+}
+
+.secao-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 16px;
+}
+
+.secao-header h3 {
+  margin: 0;
+  font-size: 16px;
+}
+
+.btn-pequeno {
+  padding: 6px 12px;
+  font-size: 12px;
+}
+
+/* ===== DIÁRIO ===== */
+.diario-lista {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.diario-item {
+  background: var(--preto-card);
+  border: 1px solid var(--preto-borda);
+  border-radius: var(--raio);
+  padding: 16px;
+  transition: var(--trans);
+}
+
+.diario-item:hover {
+  border-color: var(--esmeralda);
+  box-shadow: var(--sombra-esm);
+}
+
+.diario-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 12px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid var(--preto-borda2);
+}
+
+.diario-header strong {
+  color: var(--esmeralda-claro);
+}
+
+.diario-autor {
+  font-size: 12px;
+  color: var(--texto-secundario);
+}
+
+.diario-body {
+  color: var(--texto-primario);
+  font-size: 14px;
+  line-height: 1.6;
+  margin-bottom: 12px;
+}
+
+.diario-campo {
+  font-size: 12px;
+  color: var(--texto-secundario);
+  margin-top: 8px;
+}
+
+.diario-footer {
+  display: flex;
+  gap: 8px;
+}
+
+/* ===== CRONOGRAMA ===== */
+.cronograma-lista {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.cronograma-item {
+  background: var(--preto-card);
+  border: 1px solid var(--preto-borda);
+  border-radius: var(--raio);
+  padding: 16px;
+  transition: var(--trans);
+}
+
+.cronograma-item:hover {
+  border-color: var(--esmeralda);
+  box-shadow: var(--sombra-esm);
+}
+
+.cronograma-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 12px;
+}
+
+.cronograma-header h4 {
+  margin: 0;
+  font-size: 15px;
+}
+
+.cronograma-body {
+  font-size: 13px;
+  color: var(--texto-secundario);
+  margin-bottom: 12px;
+}
+
+.cronograma-body p {
+  margin-bottom: 6px;
+}
+
+.progresso-bar {
+  position: relative;
+  height: 24px;
+  background: var(--preto-surface);
+  border-radius: var(--raio-sm);
+  overflow: hidden;
+  margin: 8px 0;
+}
+
+.progresso-fill {
+  height: 100%;
+  background: linear-gradient(90deg, var(--esmeralda), var(--esmeralda-claro));
+  transition: width 0.3s ease;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  padding-right: 8px;
+}
+
+.progresso-texto {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--texto-primario);
+  z-index: 1;
+}
+
+.cronograma-footer {
+  display: flex;
+  gap: 8px;
+}
+
+/* ===== ATIVIDADES ===== */
+.atividades-lista {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.atividade-item {
+  background: var(--preto-card);
+  border: 1px solid var(--preto-borda);
+  border-radius: var(--raio);
+  padding: 16px;
+  transition: var(--trans);
+}
+
+.atividade-item:hover {
+  border-color: var(--esmeralda);
+  box-shadow: var(--sombra-esm);
+}
+
+.atividade-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 12px;
+  gap: 12px;
+}
+
+.atividade-header h4 {
+  margin: 0;
+  font-size: 15px;
+  flex: 1;
+}
+
+.atividade-tags {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+}
+
+.atividade-body {
+  font-size: 13px;
+  color: var(--texto-secundario);
+  margin-bottom: 12px;
+}
+
+.atividade-body p {
+  margin-bottom: 6px;
+}
+
+.atividade-footer {
+  display: flex;
+  gap: 8px;
+}
+
+/* ===== MATERIAIS ===== */
+.materiais-lista {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.material-item {
+  background: var(--preto-card);
+  border: 1px solid var(--preto-borda);
+  border-radius: var(--raio);
+  padding: 16px;
+  transition: var(--trans);
+}
+
+.material-item:hover {
+  border-color: var(--esmeralda);
+  box-shadow: var(--sombra-esm);
+}
+
+.material-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 12px;
+  gap: 12px;
+}
+
+.material-header h4 {
+  margin: 0;
+  font-size: 15px;
+  flex: 1;
+}
+
+.material-body {
+  font-size: 13px;
+  color: var(--texto-secundario);
+  margin-bottom: 12px;
+}
+
+.material-body p {
+  margin-bottom: 6px;
+  display: flex;
+  justify-content: space-between;
+}
+
+.material-footer {
+  display: flex;
+  gap: 8px;
+}
+
+/* ===== RESUMO ===== */
+.resumo-cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 16px;
+}
+
+.card-resumo {
+  background: var(--preto-card);
+  border: 1px solid var(--preto-borda);
+  border-radius: var(--raio);
+  padding: 20px;
+}
+
+.card-resumo h4 {
+  margin: 0 0 12px 0;
+  color: var(--esmeralda-claro);
+  font-size: 14px;
+}
+
+/* ===== MODAL ===== */
+#form-modal-obras {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.7);
+  justify-content: center;
+  align-items: flex-start;
+  padding: 20px;
+  overflow-y: auto;
+  z-index: 1000;
+}
+
+.form-container {
+  background: var(--preto-card);
+  border: 1px solid var(--preto-borda);
+  border-radius: var(--raio);
+  padding: 24px;
+  max-width: 500px;
+  width: 100%;
+  margin-top: 40px;
+  box-shadow: var(--sombra-lg);
+}
+
+.form-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.form-header h2 {
+  margin: 0;
+  font-size: 18px;
+  color: var(--esmeralda-claro);
+}
+
+.btn-fechar-form {
+  background: transparent;
+  border: none;
+  color: var(--texto-secundario);
+  font-size: 20px;
+  cursor: pointer;
+  transition: var(--trans);
+}
+
+.btn-fechar-form:hover {
+  color: var(--esmeralda);
+}
+
+#form-obra input,
+#form-obra select,
+#form-obra textarea,
+#form-diario input,
+#form-diario textarea,
+#form-etapa input,
+#form-etapa select,
+#form-atividade input,
+#form-atividade select,
+#form-atividade textarea,
+#form-material input,
+#form-material select,
+#form-material textarea {
+  width: 100%;
+  padding: 10px;
+  margin-bottom: 12px;
+  background: var(--preto-surface);
+  border: 1px solid var(--preto-borda2);
+  border-radius: var(--raio-sm);
+  color: var(--texto-primario);
+  font-family: inherit;
+  font-size: 14px;
+  box-sizing: border-box;
+}
+
+#form-obra input:focus,
+#form-obra select:focus,
+#form-obra textarea:focus,
+#form-diario input:focus,
+#form-diario textarea:focus,
+#form-etapa input:focus,
+#form-etapa select:focus,
+#form-atividade input:focus,
+#form-atividade select:focus,
+#form-atividade textarea:focus,
+#form-material input:focus,
+#form-material select:focus,
+#form-material textarea:focus {
+  outline: none;
+  border-color: var(--esmeralda);
+  box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.1);
+}
+
+#form-obra textarea,
+#form-diario textarea,
+#form-etapa textarea,
+#form-atividade textarea,
+#form-material textarea {
+  min-height: 80px;
+  resize: vertical;
+}
+
+#form-etapa-progresso {
+  width: 100%;
+  height: 6px;
+  margin-bottom: 12px;
+}
+
+.form-botoes {
+  display: flex;
+  gap: 12px;
+  margin-top: 20px;
+}
+
+.btn-salvar,
+.btn-cancelar {
+  flex: 1;
+  padding: 10px 16px;
+  border: none;
+  border-radius: var(--raio-sm);
+  font-weight: 600;
+  cursor: pointer;
+  transition: var(--trans);
+}
+
+.btn-salvar {
+  background: var(--esmeralda);
+  color: var(--preto);
+}
+
+.btn-salvar:hover {
+  background: var(--esmeralda-claro);
+}
+
+.btn-cancelar {
+  background: var(--preto-surface);
+  color: var(--texto-primario);
+  border: 1px solid var(--preto-borda2);
+}
+
+.btn-cancelar:hover {
+  background: var(--preto-borda);
+}
+
+/* ===== RESPONSIVO ===== */
+@media (max-width: 768px) {
+  .grid-obras {
+    grid-template-columns: 1fr;
+  }
+
+  .painel-header {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .abas-obra {
+    flex-wrap: wrap;
+  }
+
+  .form-container {
+    max-width: 100%;
+    margin-top: 20px;
+  }
+
+  .resumo-cards {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 480px) {
+  .header-obras {
+    flex-direction: column;
+    text-align: center;
+  }
+
+  .header-titulo h1 {
+    font-size: 22px;
+  }
+
+  .abas-obra {
+    padding: 8px 12px;
+    gap: 4px;
+  }
+
+  .aba-btn {
+    padding: 6px 12px;
+    font-size: 11px;
+  }
+
+  .diario-header,
+  .cronograma-header,
+  .atividade-header,
+  .material-header {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .diario-item,
+  .cronograma-item,
+  .atividade-item,
+  .material-item {
+    padding: 12px;
+  }
+
+  .card-footer {
+    flex-direction: column;
+  }
+
+  .btn-card {
+    min-width: auto;
+  }
+
+  .form-container {
+    padding: 16px;
+  }
+}
