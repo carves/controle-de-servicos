@@ -348,6 +348,124 @@
   gap: 8px;
 }
 
+/* ===== FOTOS DO DIÁRIO ===== */
+.diario-fotos {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 12px;
+}
+
+.diario-foto-thumb {
+  width: 80px;
+  height: 80px;
+  object-fit: cover;
+  border-radius: var(--raio-sm);
+  border: 1px solid var(--preto-borda2);
+  cursor: pointer;
+  transition: var(--trans);
+}
+
+.diario-foto-thumb:hover {
+  border-color: var(--esmeralda);
+  transform: scale(1.05);
+}
+
+/* ===== CAMPO DE UPLOAD NO FORMULÁRIO ===== */
+.campo-fotos-label {
+  display: block;
+  font-size: 13px;
+  color: var(--texto-secundario);
+  font-weight: 500;
+  margin: 12px 0 6px;
+}
+
+#form-diario-fotos {
+  width: 100%;
+  padding: 10px;
+  background: var(--preto-surface);
+  border: 1px dashed var(--preto-borda2);
+  border-radius: var(--raio);
+  color: var(--texto-secundario);
+  font-size: 13px;
+  cursor: pointer;
+}
+
+.preview-fotos {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 10px;
+}
+
+.preview-foto-item {
+  position: relative;
+  width: 70px;
+  height: 70px;
+}
+
+.preview-foto-item img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: var(--raio-sm);
+  border: 1px solid var(--preto-borda2);
+}
+
+.preview-foto-nova img {
+  border-color: var(--esmeralda);
+}
+
+.preview-foto-badge {
+  position: absolute;
+  bottom: 2px;
+  left: 2px;
+  background: var(--esmeralda);
+  color: #fff;
+  font-size: 9px;
+  padding: 1px 5px;
+  border-radius: 3px;
+  font-weight: 600;
+}
+
+.remover-foto {
+  position: absolute;
+  top: -6px;
+  right: -6px;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: #e53e3e;
+  color: #fff;
+  border: none;
+  font-size: 11px;
+  line-height: 1;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* ===== LIGHTBOX ===== */
+.lightbox-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.9);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+  cursor: zoom-out;
+  padding: 20px;
+}
+
+.lightbox-overlay img {
+  max-width: 100%;
+  max-height: 100%;
+  border-radius: var(--raio);
+  box-shadow: var(--sombra-lg);
+}
+
 /* ===== CRONOGRAMA ===== */
 .cronograma-lista {
   display: flex;

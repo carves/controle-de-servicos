@@ -131,6 +131,11 @@ const AppObras = (function () {
           <p>${Utils.escapeHtml(reg.descricao)}</p>
           ${reg.clima ? `<p class="diario-campo">🌤️ Clima: ${Utils.escapeHtml(reg.clima)}</p>` : ''}
           ${reg.pessoal_presente ? `<p class="diario-campo">👥 Pessoal: ${Utils.escapeHtml(reg.pessoal_presente)}</p>` : ''}
+          ${reg.fotos && reg.fotos.length > 0 ? `
+            <div class="diario-fotos">
+              ${reg.fotos.map(url => `<img src="${Utils.escapeHtml(url)}" alt="Foto do diário" class="diario-foto-thumb" data-acao="ver-foto" data-url="${Utils.escapeHtml(url)}">`).join('')}
+            </div>
+          ` : ''}
         </div>
         <div class="diario-footer">
           <button class="btn-card btn-pequeno" data-acao="editar-diario" data-id="${reg.id}">Editar</button>
@@ -144,11 +149,24 @@ const AppObras = (function () {
     container.querySelectorAll('[data-acao]').forEach(btn => {
       btn.addEventListener('click', (e) => {
         const acao = e.target.dataset.acao;
+        if (acao === 'ver-foto') {
+          abrirLightbox(e.target.dataset.url);
+          return;
+        }
         const id = parseInt(e.target.dataset.id);
         if (acao === 'editar-diario') abrirFormularioDiario(id);
         else if (acao === 'deletar-diario') deletarDiarioConfirma(id);
       });
     });
+  }
+
+  // Abre foto em tamanho grande (lightbox simples)
+  function abrirLightbox(url) {
+    const overlay = document.createElement('div');
+    overlay.className = 'lightbox-overlay';
+    overlay.innerHTML = `<img src="${Utils.escapeHtml(url)}" alt="Foto ampliada">`;
+    overlay.addEventListener('click', () => overlay.remove());
+    document.body.appendChild(overlay);
   }
 
   async function abrirFormularioDiario(id = null) {
@@ -157,7 +175,8 @@ const AppObras = (function () {
       autor: '',
       descricao: '',
       clima: '',
-      pessoal_presente: ''
+      pessoal_presente: '',
+      fotos: []
     };
 
     if (id) {
@@ -165,6 +184,9 @@ const AppObras = (function () {
       const reg = diario.find(r => r.id === id);
       if (reg) dados = reg;
     }
+
+    // Fotos já salvas (ao editar) ficam nesta lista; novas entram em novasFotos
+    let fotosExistentes = [...(dados.fotos || [])];
 
     const html = `
       <div class="form-container">
@@ -178,6 +200,11 @@ const AppObras = (function () {
           <textarea id="form-diario-desc" placeholder="O que foi feito hoje?" required>${Utils.escapeHtml(dados.descricao)}</textarea>
           <input type="text" id="form-diario-clima" placeholder="Clima" value="${Utils.escapeHtml(dados.clima || '')}">
           <input type="text" id="form-diario-pessoal" placeholder="Pessoal presente" value="${Utils.escapeHtml(dados.pessoal_presente || '')}">
+
+          <label class="campo-fotos-label">📷 Fotos</label>
+          <input type="file" id="form-diario-fotos" accept="image/*" capture="environment" multiple>
+          <div id="preview-fotos" class="preview-fotos"></div>
+
           <div class="form-botoes">
             <button type="submit" class="btn btn-salvar">Salvar</button>
             <button type="button" class="btn btn-cancelar" onclick="document.getElementById('form-modal-obras').style.display='none'">Cancelar</button>
@@ -190,17 +217,61 @@ const AppObras = (function () {
     modal.innerHTML = html;
     modal.style.display = 'flex';
 
+    const previewContainer = document.getElementById('preview-fotos');
+    const inputFotos = document.getElementById('form-diario-fotos');
+
+    function renderizarPreview() {
+      const existentesHtml = fotosExistentes.map((url, i) => `
+        <div class="preview-foto-item">
+          <img src="${Utils.escapeHtml(url)}" alt="Foto">
+          <button type="button" class="remover-foto" data-tipo="existente" data-idx="${i}">✕</button>
+        </div>
+      `).join('');
+
+      const novasHtml = Array.from(inputFotos.files || []).map((arquivo, i) => `
+        <div class="preview-foto-item preview-foto-nova">
+          <img src="${URL.createObjectURL(arquivo)}" alt="Nova foto">
+          <span class="preview-foto-badge">novo</span>
+        </div>
+      `).join('');
+
+      previewContainer.innerHTML = existentesHtml + novasHtml;
+
+      previewContainer.querySelectorAll('.remover-foto').forEach(btn => {
+        btn.addEventListener('click', () => {
+          const idx = parseInt(btn.dataset.idx);
+          fotosExistentes.splice(idx, 1);
+          renderizarPreview();
+        });
+      });
+    }
+    renderizarPreview();
+
+    inputFotos.addEventListener('change', renderizarPreview);
+
     document.getElementById('form-diario').addEventListener('submit', async (e) => {
       e.preventDefault();
-      const formDados = {
-        data: document.getElementById('form-diario-data').value,
-        autor: document.getElementById('form-diario-autor').value,
-        descricao: document.getElementById('form-diario-desc').value,
-        clima: document.getElementById('form-diario-clima').value,
-        pessoal_presente: document.getElementById('form-diario-pessoal').value
-      };
+
+      const submitBtn = e.target.querySelector('.btn-salvar');
+      const arquivosNovos = inputFotos.files;
 
       try {
+        let urlsNovas = [];
+        if (arquivosNovos.length > 0) {
+          submitBtn.disabled = true;
+          submitBtn.textContent = `Enviando ${arquivosNovos.length} foto(s)...`;
+          urlsNovas = await StoreObras.uploadFotos(arquivosNovos);
+        }
+
+        const formDados = {
+          data: document.getElementById('form-diario-data').value,
+          autor: document.getElementById('form-diario-autor').value,
+          descricao: document.getElementById('form-diario-desc').value,
+          clima: document.getElementById('form-diario-clima').value,
+          pessoal_presente: document.getElementById('form-diario-pessoal').value,
+          fotos: [...fotosExistentes, ...urlsNovas]
+        };
+
         if (id) {
           await StoreObras.atualizarAnotacao(id, formDados);
           Utils.toast('Registro atualizado');
@@ -212,6 +283,8 @@ const AppObras = (function () {
         await carregarDiario();
       } catch (e) {
         Utils.toast('Erro: ' + e.message);
+        submitBtn.disabled = false;
+        submitBtn.textContent = 'Salvar';
       }
     });
   }

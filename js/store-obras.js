@@ -34,6 +34,37 @@ const StoreObras = (function () {
     }
   }
 
+  // ===== UPLOAD DE FOTOS =====
+  // Faz upload de um arquivo para o bucket 'diario-fotos' e retorna a URL pública
+  async function uploadFoto(arquivo) {
+    const extensao = arquivo.name.split('.').pop();
+    const nomeArquivo = `${Date.now()}_${Math.random().toString(36).slice(2)}.${extensao}`;
+    const url = SUPABASE_URL + '/storage/v1/object/diario-fotos/' + nomeArquivo;
+
+    const resp = await fetch(url, {
+      method: 'POST',
+      headers: {
+        'apikey': SUPABASE_ANON_KEY,
+        'Authorization': 'Bearer ' + SUPABASE_ANON_KEY,
+        'Content-Type': arquivo.type
+      },
+      body: arquivo
+    });
+
+    if (!resp.ok) {
+      const erro = await resp.text();
+      throw new Error('Falha no upload: ' + erro);
+    }
+
+    return SUPABASE_URL + '/storage/v1/object/public/diario-fotos/' + nomeArquivo;
+  }
+
+  // Faz upload de múltiplos arquivos em paralelo, retorna array de URLs
+  async function uploadFotos(arquivos) {
+    const promessas = Array.from(arquivos).map(arquivo => uploadFoto(arquivo));
+    return Promise.all(promessas);
+  }
+
   // ===== OBRAS =====
   async function obterObras() {
     const url = SUPABASE_URL + '/rest/v1/obras?select=*&order=id.desc';
@@ -132,6 +163,7 @@ const StoreObras = (function () {
       descricao: dados.descricao || '',
       clima: dados.clima || '',
       pessoal_presente: dados.pessoal_presente || '',
+      fotos: dados.fotos || [],
       criada: new Date().toISOString()
     };
     try {
@@ -344,6 +376,7 @@ const StoreObras = (function () {
   }
 
   return {
+    uploadFoto, uploadFotos,
     obterObras, obterObra, criarObra, atualizarObra, deletarObra,
     obterDiario, adicionarAnotacao, atualizarAnotacao, deletarAnotacao,
     obterAtividades, adicionarAtividade, atualizarAtividade, deletarAtividade,
