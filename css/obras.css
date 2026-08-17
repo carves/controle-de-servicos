@@ -543,6 +543,90 @@
   gap: 8px;
 }
 
+/* ===== TABELA DE ETAPAS ===== */
+.tabela-etapas {
+  width: 100%;
+  border-collapse: collapse;
+  background: var(--preto-card);
+  border: 1px solid var(--preto-borda);
+  border-radius: var(--raio);
+  overflow: hidden;
+}
+
+.tabela-etapas th {
+  text-align: left;
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+  color: var(--texto-secundario);
+  padding: 10px 12px;
+  background: var(--preto-surface);
+  border-bottom: 1px solid var(--preto-borda);
+}
+
+.tabela-etapas td {
+  padding: 10px 12px;
+  font-size: 13px;
+  color: var(--texto-primario);
+  border-bottom: 1px solid var(--preto-borda);
+  vertical-align: middle;
+}
+
+.tabela-etapas tbody tr:hover {
+  background: var(--preto-surface);
+}
+
+.tabela-etapas tbody tr:last-child td {
+  border-bottom: none;
+}
+
+.etapa-col-titulo { font-weight: 600; width: 20%; }
+.etapa-col-obs { color: var(--texto-secundario); width: 32%; }
+.etapa-col-status { width: 14%; }
+.etapa-col-progresso { width: 18%; }
+.etapa-col-acoes { width: 16%; white-space: nowrap; }
+
+.tabela-etapas .progresso-bar {
+  height: 18px;
+  margin: 0;
+}
+
+.tabela-etapas .progresso-texto {
+  font-size: 10px;
+}
+
+/* Linha de adição rápida (rodapé da tabela) */
+.linha-add-etapa td {
+  background: var(--preto-surface);
+  border-bottom: none;
+  padding: 10px 12px;
+}
+
+.linha-add-etapa input {
+  width: 100%;
+  padding: 8px 10px;
+  background: var(--preto-card);
+  border: 1px solid var(--preto-borda2);
+  border-radius: var(--raio-sm);
+  color: var(--texto-primario);
+  font-size: 13px;
+}
+
+.linha-add-etapa input:focus {
+  outline: none;
+  border-color: var(--esmeralda);
+}
+
+.tabela-etapas .no-data {
+  text-align: center;
+  padding: 20px;
+  color: var(--texto-fraco);
+}
+
+@media (max-width: 768px) {
+  .tabela-etapas { display: block; overflow-x: auto; white-space: nowrap; }
+}
+
 /* ===== ATIVIDADES ===== */
 .atividades-lista {
   display: flex;

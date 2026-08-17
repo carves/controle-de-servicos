@@ -309,35 +309,48 @@ const AppObras = (function () {
 
   function renderizarCronograma(etapas) {
     const container = document.getElementById('cronograma-lista');
-    if (etapas.length === 0) {
-      container.innerHTML = '<div class="no-data">Nenhuma etapa no cronograma</div>';
-      return;
-    }
 
-    const html = etapas.map(etapa => `
-      <div class="cronograma-item" data-id="${etapa.id}">
-        <div class="cronograma-header">
-          <h4>${Utils.escapeHtml(etapa.etapa)}</h4>
-          <span class="status-badge cor-${getCorStatus(etapa.status)}">${etapa.status}</span>
-        </div>
-        <div class="cronograma-body">
-          <p>${Utils.escapeHtml(etapa.descricao || '')}</p>
-          <p><strong>Início:</strong> ${Utils.dateBR(etapa.data_inicio) || '—'}</p>
-          <p><strong>Previsão:</strong> ${Utils.dateBR(etapa.data_fim_prevista) || '—'}</p>
-          ${etapa.data_fim_real ? `<p><strong>Fim Real:</strong> ${Utils.dateBR(etapa.data_fim_real)}</p>` : ''}
+    const linhasHtml = etapas.map(etapa => `
+      <tr data-id="${etapa.id}">
+        <td class="etapa-col-titulo">${Utils.escapeHtml(etapa.etapa)}</td>
+        <td class="etapa-col-obs">${Utils.escapeHtml(etapa.descricao || '—')}</td>
+        <td class="etapa-col-status"><span class="status-badge cor-${getCorStatus(etapa.status)}">${etapa.status}</span></td>
+        <td class="etapa-col-progresso">
           <div class="progresso-bar">
             <div class="progresso-fill" style="width: ${etapa.progresso}%"></div>
             <span class="progresso-texto">${etapa.progresso}%</span>
           </div>
-        </div>
-        <div class="cronograma-footer">
+        </td>
+        <td class="etapa-col-acoes">
           <button class="btn-card btn-pequeno" data-acao="editar-etapa" data-id="${etapa.id}">Editar</button>
           <button class="btn-card btn-pequeno btn-deletar" data-acao="deletar-etapa" data-id="${etapa.id}">Deletar</button>
-        </div>
-      </div>
+        </td>
+      </tr>
     `).join('');
 
-    container.innerHTML = html;
+    container.innerHTML = `
+      <table class="tabela-etapas">
+        <thead>
+          <tr>
+            <th class="etapa-col-titulo">Título</th>
+            <th class="etapa-col-obs">Observação</th>
+            <th class="etapa-col-status">Status</th>
+            <th class="etapa-col-progresso">Progresso</th>
+            <th class="etapa-col-acoes">Ações</th>
+          </tr>
+        </thead>
+        <tbody id="etapas-tbody">
+          ${linhasHtml || `<tr><td colspan="5" class="no-data">Nenhuma etapa cadastrada</td></tr>`}
+        </tbody>
+        <tfoot>
+          <tr class="linha-add-etapa">
+            <td><input type="text" id="add-etapa-titulo" placeholder="Título da etapa"></td>
+            <td><input type="text" id="add-etapa-obs" placeholder="Observação (opcional)"></td>
+            <td colspan="3"><button id="btn-add-etapa" class="btn btn-pequeno btn-prim">➕ Adicionar</button></td>
+          </tr>
+        </tfoot>
+      </table>
+    `;
 
     container.querySelectorAll('[data-acao]').forEach(btn => {
       btn.addEventListener('click', (e) => {
@@ -345,6 +358,44 @@ const AppObras = (function () {
         const id = parseInt(e.target.dataset.id);
         if (acao === 'editar-etapa') abrirFormularioEtapa(id);
         else if (acao === 'deletar-etapa') deletarEtapaConfirma(id);
+      });
+    });
+
+    // Adição rápida via linha da tabela (sem abrir modal)
+    const inputTitulo = document.getElementById('add-etapa-titulo');
+    const inputObs = document.getElementById('add-etapa-obs');
+    const btnAdd = document.getElementById('btn-add-etapa');
+
+    async function adicionarRapido() {
+      const titulo = inputTitulo.value.trim();
+      if (!titulo) {
+        inputTitulo.focus();
+        return;
+      }
+      try {
+        btnAdd.disabled = true;
+        await StoreObras.adicionarEtapa(estado.obraAtual.id, {
+          etapa: titulo,
+          descricao: inputObs.value.trim(),
+          status: 'Planejado',
+          progresso: 0
+        });
+        await carregarCronograma();
+        // Mantém o foco no campo título para adicionar a próxima etapa rapidamente
+        setTimeout(() => document.getElementById('add-etapa-titulo')?.focus(), 0);
+      } catch (e) {
+        Utils.toast('Erro ao adicionar etapa: ' + e.message);
+        btnAdd.disabled = false;
+      }
+    }
+
+    btnAdd.addEventListener('click', adicionarRapido);
+    [inputTitulo, inputObs].forEach(input => {
+      input.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter') {
+          e.preventDefault();
+          adicionarRapido();
+        }
       });
     });
   }
@@ -845,7 +896,6 @@ const AppObras = (function () {
     // Botões de novos registros
     document.addEventListener('click', async (e) => {
       if (e.target.id === 'btn-nova-anotacao') await abrirFormularioDiario();
-      else if (e.target.id === 'btn-nova-etapa') await abrirFormularioEtapa();
       else if (e.target.id === 'btn-nova-atividade') await abrirFormularioAtividade();
       else if (e.target.id === 'btn-novo-material') await abrirFormularioMaterial();
     });
