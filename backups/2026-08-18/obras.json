@@ -1,0 +1,30 @@
+[
+  {
+    "id": 2,
+    "nome": "Colina da brava",
+    "cliente": "Re3",
+    "arquiteto": "none",
+    "endereco": "",
+    "descricao": "",
+    "foto": "https://adrxvlkzcfevrrqxpqkc.supabase.co/storage/v1/object/public/obras-fotos/1787012737453_ynjflhto8ic.jpg",
+    "status": "Em Andamento",
+    "data_inicio": "2026-08-14",
+    "data_prevista_fim": "2026-08-28",
+    "responsavel": "",
+    "criada": "2026-08-17T23:41:13.09+00:00"
+  },
+  {
+    "id": 5,
+    "nome": "Barrramares 2002",
+    "cliente": "Hilário",
+    "arquiteto": "Iesca",
+    "endereco": "",
+    "descricao": "",
+    "foto": "https://adrxvlkzcfevrrqxpqkc.supabase.co/storage/v1/object/public/obras-fotos/1787012759640_ya8o5ipp6r.jpg",
+    "status": "Em Andamento",
+    "data_inicio": null,
+    "data_prevista_fim": null,
+    "responsavel": "",
+    "criada": "2026-08-17T23:53:45.98+00:00"
+  }
+]

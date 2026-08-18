@@ -1,0 +1,57 @@
+[
+  {
+    "id": 2,
+    "obra_id": 2,
+    "data": "2026-08-14",
+    "autor": "Guilherme",
+    "descricao": "Inicio da retirada de formas de vigas",
+    "clima": "chuva parcial",
+    "pessoal_presente": "Guilherme e Jaime",
+    "criada": "2026-08-17T23:42:06.708+00:00",
+    "fotos": []
+  },
+  {
+    "id": 3,
+    "obra_id": 2,
+    "data": "2026-08-17",
+    "autor": "Guilherme",
+    "descricao": "Término da remoção das caixas de vigas e remoção de grande parte de pregos e pedaços de vergalhão que tinha nas vigas e pilares",
+    "clima": "nublado",
+    "pessoal_presente": "Guilherme e Jaime",
+    "criada": "2026-08-17T23:43:35.044+00:00",
+    "fotos": []
+  },
+  {
+    "id": 5,
+    "obra_id": 5,
+    "data": "2026-08-17",
+    "autor": "Zé",
+    "descricao": "finalização de massa na área da cozinha",
+    "clima": "nublado",
+    "pessoal_presente": "Denis, Zé",
+    "criada": "2026-08-17T23:54:35.419+00:00",
+    "fotos": []
+  },
+  {
+    "id": 6,
+    "obra_id": 5,
+    "data": "2026-08-17",
+    "autor": "Zé",
+    "descricao": "duas demãos de tinta paredes da cozinha",
+    "clima": "nublado",
+    "pessoal_presente": "Denis, Zé",
+    "criada": "2026-08-17T23:55:08.164+00:00",
+    "fotos": []
+  },
+  {
+    "id": 7,
+    "obra_id": 5,
+    "data": "2026-08-17",
+    "autor": "Zé",
+    "descricao": "Primeira mão de massa nas sancas da sala",
+    "clima": "nublado",
+    "pessoal_presente": "Denis, Zé",
+    "criada": "2026-08-17T23:55:31.709+00:00",
+    "fotos": []
+  }
+]
