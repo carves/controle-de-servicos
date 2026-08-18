@@ -422,6 +422,21 @@
   margin-top: 10px;
 }
 
+.preview-foto-capa {
+  margin-bottom: 10px;
+}
+
+.preview-foto-capa .preview-foto-item {
+  width: 140px;
+  height: 100px;
+}
+
+.sem-foto-texto {
+  font-size: 12px;
+  color: var(--texto-fraco);
+  font-style: italic;
+}
+
 .preview-foto-item {
   position: relative;
   width: 70px;

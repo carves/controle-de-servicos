@@ -804,7 +804,11 @@ const AppObras = (function () {
           <input type="text" id="form-obra-arquiteto" placeholder="Arquiteto" value="${Utils.escapeHtml(dados.arquiteto || '')}">
           <input type="text" id="form-obra-endereco" placeholder="Endereço" value="${Utils.escapeHtml(dados.endereco || '')}">
           <textarea id="form-obra-desc" placeholder="Descrição da obra">${Utils.escapeHtml(dados.descricao || '')}</textarea>
-          <input type="text" id="form-obra-foto" placeholder="URL da foto (deixe vazio para usar ícone)" value="${Utils.escapeHtml(dados.foto || '')}">
+
+          <label class="campo-fotos-label">🖼️ Foto de Apresentação</label>
+          <div id="preview-foto-capa" class="preview-foto-capa"></div>
+          <input type="file" id="form-obra-foto-arquivo" accept="image/*">
+
           <input type="text" id="form-obra-responsavel" placeholder="Responsável da obra" value="${Utils.escapeHtml(dados.responsavel || '')}">
           <label>Data Início</label>
           <input type="date" id="form-obra-inicio" value="${dados.data_inicio || ''}">
@@ -828,22 +832,65 @@ const AppObras = (function () {
     modal.innerHTML = html;
     modal.style.display = 'flex';
 
+    // ===== Preview da foto de apresentação =====
+    let fotoAtual = dados.foto || '';
+    const previewCapa = document.getElementById('preview-foto-capa');
+    const inputFotoArquivo = document.getElementById('form-obra-foto-arquivo');
+
+    function renderizarPreviewCapa() {
+      if (inputFotoArquivo.files[0]) {
+        previewCapa.innerHTML = `
+          <div class="preview-foto-item preview-foto-nova">
+            <img src="${URL.createObjectURL(inputFotoArquivo.files[0])}" alt="Nova foto de capa">
+            <span class="preview-foto-badge">novo</span>
+          </div>
+        `;
+      } else if (fotoAtual) {
+        previewCapa.innerHTML = `
+          <div class="preview-foto-item">
+            <img src="${Utils.escapeHtml(fotoAtual)}" alt="Foto de capa atual">
+            <button type="button" class="remover-foto" id="btn-remover-foto-capa">✕</button>
+          </div>
+        `;
+        document.getElementById('btn-remover-foto-capa').addEventListener('click', () => {
+          fotoAtual = '';
+          inputFotoArquivo.value = '';
+          renderizarPreviewCapa();
+        });
+      } else {
+        previewCapa.innerHTML = '<p class="sem-foto-texto">Nenhuma foto selecionada</p>';
+      }
+    }
+    renderizarPreviewCapa();
+    inputFotoArquivo.addEventListener('change', renderizarPreviewCapa);
+
     document.getElementById('form-obra').addEventListener('submit', async (e) => {
       e.preventDefault();
-      const formDados = {
-        nome: document.getElementById('form-obra-nome').value,
-        cliente: document.getElementById('form-obra-cliente').value,
-        arquiteto: document.getElementById('form-obra-arquiteto').value,
-        endereco: document.getElementById('form-obra-endereco').value,
-        descricao: document.getElementById('form-obra-desc').value,
-        responsavel: document.getElementById('form-obra-responsavel').value,
-        foto: document.getElementById('form-obra-foto').value,
-        data_inicio: document.getElementById('form-obra-inicio').value || null,
-        data_prevista_fim: document.getElementById('form-obra-fim').value || null,
-        status: document.getElementById('form-obra-status').value
-      };
+
+      const submitBtn = e.target.querySelector('.btn-salvar');
+      const arquivoNovo = inputFotoArquivo.files[0];
 
       try {
+        let urlFoto = fotoAtual;
+        if (arquivoNovo) {
+          submitBtn.disabled = true;
+          submitBtn.textContent = 'Enviando foto...';
+          urlFoto = await StoreObras.uploadFoto(arquivoNovo, 'obras-fotos');
+        }
+
+        const formDados = {
+          nome: document.getElementById('form-obra-nome').value,
+          cliente: document.getElementById('form-obra-cliente').value,
+          arquiteto: document.getElementById('form-obra-arquiteto').value,
+          endereco: document.getElementById('form-obra-endereco').value,
+          descricao: document.getElementById('form-obra-desc').value,
+          responsavel: document.getElementById('form-obra-responsavel').value,
+          foto: urlFoto,
+          data_inicio: document.getElementById('form-obra-inicio').value || null,
+          data_prevista_fim: document.getElementById('form-obra-fim').value || null,
+          status: document.getElementById('form-obra-status').value
+        };
+
         if (id) {
           await StoreObras.atualizarObra(id, formDados);
           Utils.toast('Obra atualizada');
@@ -855,6 +902,8 @@ const AppObras = (function () {
         await carregarObras();
       } catch (e) {
         Utils.toast('Erro: ' + e.message);
+        submitBtn.disabled = false;
+        submitBtn.textContent = 'Salvar';
       }
     });
   }

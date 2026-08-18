@@ -35,11 +35,11 @@ const StoreObras = (function () {
   }
 
   // ===== UPLOAD DE FOTOS =====
-  // Faz upload de um arquivo para o bucket 'diario-fotos' e retorna a URL pública
-  async function uploadFoto(arquivo) {
+  // Faz upload de um arquivo para o bucket informado e retorna a URL pública
+  async function uploadFoto(arquivo, bucket = 'diario-fotos') {
     const extensao = arquivo.name.split('.').pop();
     const nomeArquivo = `${Date.now()}_${Math.random().toString(36).slice(2)}.${extensao}`;
-    const url = SUPABASE_URL + '/storage/v1/object/diario-fotos/' + nomeArquivo;
+    const url = SUPABASE_URL + '/storage/v1/object/' + bucket + '/' + nomeArquivo;
 
     const resp = await fetch(url, {
       method: 'POST',
@@ -56,12 +56,12 @@ const StoreObras = (function () {
       throw new Error('Falha no upload: ' + erro);
     }
 
-    return SUPABASE_URL + '/storage/v1/object/public/diario-fotos/' + nomeArquivo;
+    return SUPABASE_URL + '/storage/v1/object/public/' + bucket + '/' + nomeArquivo;
   }
 
   // Faz upload de múltiplos arquivos em paralelo, retorna array de URLs
-  async function uploadFotos(arquivos) {
-    const promessas = Array.from(arquivos).map(arquivo => uploadFoto(arquivo));
+  async function uploadFotos(arquivos, bucket = 'diario-fotos') {
+    const promessas = Array.from(arquivos).map(arquivo => uploadFoto(arquivo, bucket));
     return Promise.all(promessas);
   }
 
