@@ -9,6 +9,13 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link rel="stylesheet" href="css/styles.css">
   <link rel="stylesheet" href="css/obras.css">
+  <link rel="manifest" href="manifest.json">
+  <link rel="icon" href="icon.svg" type="image/svg+xml">
+  <link rel="apple-touch-icon" href="icon.svg">
+  <meta name="theme-color" content="#10b981">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <script src="js/pin-gate.js"></script>
 </head>
 <body>
 
@@ -26,6 +33,18 @@
       <p>Diário de Bordo, Cronograma e Materiais</p>
     </div>
     <button id="btn-nova-obra" class="btn btn-prim">➕ Nova Obra</button>
+  </div>
+
+  <!-- BUSCA E FILTROS -->
+  <div class="toolbar-obras">
+    <input type="text" id="busca-obras" placeholder="🔍 Buscar por nome, cliente ou endereço...">
+    <div class="filtros-obras">
+      <button class="filtro-obra-btn ativo" data-filtro="todas">Todas</button>
+      <button class="filtro-obra-btn" data-filtro="Planejamento">Planejamento</button>
+      <button class="filtro-obra-btn" data-filtro="Em Andamento">Em Andamento</button>
+      <button class="filtro-obra-btn" data-filtro="Concluída">Concluída</button>
+      <button class="filtro-obra-btn" data-filtro="Pausada">Pausada</button>
+    </div>
   </div>
 
   <!-- LISTAGEM DE OBRAS (INICIAL) -->
@@ -64,7 +83,10 @@
       <div id="aba-diario" class="aba-conteudo aba-ativa">
         <div class="secao-header">
           <h3>📖 Diário de Bordo</h3>
-          <button id="btn-nova-anotacao" class="btn btn-pequeno">➕ Novo Registro</button>
+          <div class="secao-header-botoes">
+            <button id="btn-exportar-diario" class="btn btn-pequeno">📄 Exportar PDF</button>
+            <button id="btn-nova-anotacao" class="btn btn-pequeno btn-prim">➕ Novo Registro</button>
+          </div>
         </div>
         <div id="diario-lista" class="diario-lista"></div>
       </div>
@@ -126,6 +148,7 @@
 <script src="js/store.js"></script>
 <script src="js/store-obras.js"></script>
 <script src="js/app-obras.js"></script>
+<script src="js/pwa-register.js"></script>
 
 </body>
 </html>

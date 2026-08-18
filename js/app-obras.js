@@ -7,7 +7,9 @@ const AppObras = (function () {
   const estado = {
     obras: [],
     obraAtual: null,
-    telaAtual: 'lista' // 'lista' ou 'obra'
+    telaAtual: 'lista', // 'lista' ou 'obra'
+    buscaObras: '',
+    filtroStatusObra: 'todas'
   };
 
   // ===== TELA INICIAL: LISTAGEM DE OBRAS =====
@@ -20,8 +22,29 @@ const AppObras = (function () {
     }
   }
 
+  // Aplica busca por texto e filtro de status sobre a lista de obras
+  function obrasFiltradas() {
+    let lista = estado.obras;
+
+    if (estado.filtroStatusObra !== 'todas') {
+      lista = lista.filter(o => o.status === estado.filtroStatusObra);
+    }
+
+    if (estado.buscaObras.trim()) {
+      const termo = Utils.normalize(estado.buscaObras);
+      lista = lista.filter(o =>
+        Utils.normalize(o.nome).includes(termo) ||
+        Utils.normalize(o.cliente || '').includes(termo) ||
+        Utils.normalize(o.endereco || '').includes(termo)
+      );
+    }
+
+    return lista;
+  }
+
   function renderizarListaObras() {
     const container = document.getElementById('lista-obras-container');
+    const obras = obrasFiltradas();
 
     if (estado.obras.length === 0) {
       container.innerHTML = `
@@ -34,7 +57,12 @@ const AppObras = (function () {
       return;
     }
 
-    const html = estado.obras.map(obra => `
+    if (obras.length === 0) {
+      container.innerHTML = `<div class="no-data"><p>🔍 Nenhuma obra encontrada com esse filtro</p></div>`;
+      return;
+    }
+
+    const html = obras.map(obra => `
       <div class="card-obra-link" data-id="${obra.id}">
         <button class="btn-editar-card" data-acao="editar" data-id="${obra.id}" title="Editar obra">✏️</button>
         <div class="card-foto" style="background-image: url('${Utils.escapeHtml(obra.foto || '')}'); background-color: var(--preto-surface);">
@@ -113,6 +141,72 @@ const AppObras = (function () {
     if (!estado.obraAtual) return;
     const diario = await StoreObras.obterDiario(estado.obraAtual.id);
     renderizarDiario(diario);
+  }
+
+  // Monta uma versão para impressão do diário e abre o diálogo de impressão
+  // (o usuário escolhe "Salvar como PDF" no próprio diálogo do navegador)
+  async function exportarDiarioPDF() {
+    if (!estado.obraAtual) return;
+    Utils.toast('Preparando PDF...');
+
+    const registros = await StoreObras.obterDiario(estado.obraAtual.id);
+    const obra = estado.obraAtual;
+
+    // Ordena do mais antigo para o mais novo (ordem cronológica de leitura)
+    const ordenados = [...registros].sort((a, b) => new Date(a.data) - new Date(b.data));
+
+    const corpoHtml = ordenados.map(reg => `
+      <section class="pdf-registro">
+        <div class="pdf-registro-header">
+          <strong>${Utils.dateBR(reg.data)}</strong>
+          <span>${Utils.escapeHtml(reg.autor || 'Sem autor')}</span>
+        </div>
+        <p>${Utils.escapeHtml(reg.descricao)}</p>
+        ${reg.clima ? `<p class="pdf-campo">🌤️ Clima: ${Utils.escapeHtml(reg.clima)}</p>` : ''}
+        ${reg.pessoal_presente ? `<p class="pdf-campo">👥 Pessoal: ${Utils.escapeHtml(reg.pessoal_presente)}</p>` : ''}
+        ${reg.fotos && reg.fotos.length > 0 ? `
+          <div class="pdf-fotos">
+            ${reg.fotos.map(url => `<img src="${Utils.escapeHtml(url)}" alt="Foto do registro">`).join('')}
+          </div>
+        ` : ''}
+      </section>
+    `).join('');
+
+    const html = `
+      <!DOCTYPE html>
+      <html lang="pt-BR">
+      <head>
+        <meta charset="utf-8">
+        <title>Diário de Bordo - ${Utils.escapeHtml(obra.nome)}</title>
+        <style>
+          body { font-family: Arial, sans-serif; color: #1a1a1a; padding: 30px; max-width: 800px; margin: 0 auto; }
+          h1 { font-size: 22px; margin-bottom: 4px; }
+          .pdf-subtitulo { color: #555; font-size: 13px; margin-bottom: 24px; }
+          .pdf-registro { border-bottom: 1px solid #ddd; padding: 14px 0; page-break-inside: avoid; }
+          .pdf-registro-header { display: flex; justify-content: space-between; font-size: 13px; color: #333; margin-bottom: 6px; }
+          .pdf-registro p { font-size: 13px; line-height: 1.5; margin: 4px 0; }
+          .pdf-campo { color: #555; font-size: 12px; }
+          .pdf-fotos { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 8px; }
+          .pdf-fotos img { width: 140px; height: 140px; object-fit: cover; border-radius: 4px; border: 1px solid #ccc; }
+          @media print { .pdf-registro { break-inside: avoid; } }
+        </style>
+      </head>
+      <body>
+        <h1>📖 Diário de Bordo — ${Utils.escapeHtml(obra.nome)}</h1>
+        <p class="pdf-subtitulo">${Utils.escapeHtml(obra.endereco || '')} ${obra.cliente ? '· Cliente: ' + Utils.escapeHtml(obra.cliente) : ''} · ${ordenados.length} registro(s)</p>
+        ${corpoHtml || '<p>Nenhum registro no diário.</p>'}
+        <script>window.onload = () => window.print();</script>
+      </body>
+      </html>
+    `;
+
+    const janela = window.open('', '_blank');
+    if (!janela) {
+      Utils.toast('Permita pop-ups para exportar o PDF');
+      return;
+    }
+    janela.document.write(html);
+    janela.document.close();
   }
 
   function renderizarDiario(registros) {
@@ -260,8 +354,12 @@ const AppObras = (function () {
         let urlsNovas = [];
         if (arquivosNovos.length > 0) {
           submitBtn.disabled = true;
+          submitBtn.textContent = `Otimizando ${arquivosNovos.length} foto(s)...`;
+          const arquivosComprimidos = await Promise.all(
+            Array.from(arquivosNovos).map(a => Utils.comprimirImagem(a))
+          );
           submitBtn.textContent = `Enviando ${arquivosNovos.length} foto(s)...`;
-          urlsNovas = await StoreObras.uploadFotos(arquivosNovos);
+          urlsNovas = await StoreObras.uploadFotos(arquivosComprimidos);
         }
 
         const formDados = {
@@ -874,8 +972,10 @@ const AppObras = (function () {
         let urlFoto = fotoAtual;
         if (arquivoNovo) {
           submitBtn.disabled = true;
+          submitBtn.textContent = 'Otimizando foto...';
+          const arquivoComprimido = await Utils.comprimirImagem(arquivoNovo);
           submitBtn.textContent = 'Enviando foto...';
-          urlFoto = await StoreObras.uploadFoto(arquivoNovo, 'obras-fotos');
+          urlFoto = await StoreObras.uploadFoto(arquivoComprimido, 'obras-fotos');
         }
 
         const formDados = {
@@ -927,6 +1027,22 @@ const AppObras = (function () {
     // Botão voltar
     document.getElementById('btn-voltar-obras').addEventListener('click', voltarParaLista);
 
+    // Busca de obras
+    document.getElementById('busca-obras').addEventListener('input', (e) => {
+      estado.buscaObras = e.target.value;
+      renderizarListaObras();
+    });
+
+    // Filtros de status
+    document.querySelectorAll('.filtro-obra-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        document.querySelectorAll('.filtro-obra-btn').forEach(b => b.classList.remove('ativo'));
+        btn.classList.add('ativo');
+        estado.filtroStatusObra = btn.dataset.filtro;
+        renderizarListaObras();
+      });
+    });
+
     // Botões das abas
     document.querySelectorAll('.aba-btn').forEach(btn => {
       btn.addEventListener('click', async (e) => {
@@ -946,6 +1062,7 @@ const AppObras = (function () {
     // Botões de novos registros
     document.addEventListener('click', async (e) => {
       if (e.target.id === 'btn-nova-anotacao') await abrirFormularioDiario();
+      else if (e.target.id === 'btn-exportar-diario') await exportarDiarioPDF();
       else if (e.target.id === 'btn-nova-atividade') await abrirFormularioAtividade();
       else if (e.target.id === 'btn-novo-material') await abrirFormularioMaterial();
     });

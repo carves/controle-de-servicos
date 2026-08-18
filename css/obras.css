@@ -32,6 +32,77 @@
   color: var(--texto-secundario);
 }
 
+/* ===== BUSCA E FILTROS DE OBRAS ===== */
+.toolbar-obras {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 12px;
+  padding: 14px 20px;
+  background: var(--preto-card);
+  border-bottom: 1px solid var(--preto-borda);
+}
+
+#busca-obras {
+  flex: 1;
+  min-width: 200px;
+  padding: 10px 14px;
+  background: var(--preto-surface);
+  border: 1px solid var(--preto-borda2);
+  border-radius: var(--raio);
+  color: var(--texto-primario);
+  font-size: 14px;
+}
+
+#busca-obras:focus {
+  outline: none;
+  border-color: var(--esmeralda);
+}
+
+.filtros-obras {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.filtro-obra-btn {
+  padding: 8px 14px;
+  background: transparent;
+  border: 1px solid var(--preto-borda2);
+  color: var(--texto-secundario);
+  border-radius: var(--raio-sm);
+  cursor: pointer;
+  font-size: 12px;
+  font-weight: 500;
+  white-space: nowrap;
+  transition: var(--trans);
+}
+
+.filtro-obra-btn:hover {
+  border-color: var(--esmeralda);
+  color: var(--esmeralda);
+}
+
+.filtro-obra-btn.ativo {
+  background: var(--esmeralda);
+  color: var(--preto);
+  border-color: var(--esmeralda);
+  font-weight: 600;
+}
+
+@media (max-width: 768px) {
+  .toolbar-obras {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .filtros-obras {
+    overflow-x: auto;
+    flex-wrap: nowrap;
+    padding-bottom: 4px;
+  }
+}
+
 /* ===== GRID DE OBRAS ===== */
 .lista-obras-container {
   flex: 1;
@@ -309,6 +380,12 @@
 .secao-header h3 {
   margin: 0;
   font-size: 16px;
+}
+
+.secao-header-botoes {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
 }
 
 .btn-pequeno {

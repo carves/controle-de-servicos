@@ -1,0 +1,19 @@
+{
+  "name": "Controle de Serviços",
+  "short_name": "Serviços",
+  "description": "Controle de ordens de serviço e gestão de obras",
+  "start_url": "index.html",
+  "scope": ".",
+  "display": "standalone",
+  "orientation": "portrait-primary",
+  "background_color": "#0a0c10",
+  "theme_color": "#10b981",
+  "icons": [
+    {
+      "src": "icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}

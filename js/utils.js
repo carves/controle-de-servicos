@@ -75,6 +75,53 @@ const Utils = (function () {
     setTimeout(() => URL.revokeObjectURL(url), 1000);
   }
 
+  // Comprime uma imagem no navegador antes do upload (redimensiona e reduz qualidade).
+  // Reduz o tamanho de fotos de celular (4-8MB) para poucas centenas de KB.
+  function comprimirImagem(arquivo, maxDimensao = 1600, qualidade = 0.75) {
+    return new Promise((resolve) => {
+      if (!arquivo.type || !arquivo.type.startsWith('image/')) {
+        resolve(arquivo);
+        return;
+      }
+
+      const img = new Image();
+      const url = URL.createObjectURL(arquivo);
+
+      img.onload = () => {
+        URL.revokeObjectURL(url);
+        let { width, height } = img;
+
+        if (width > maxDimensao || height > maxDimensao) {
+          if (width > height) {
+            height = Math.round(height * (maxDimensao / width));
+            width = maxDimensao;
+          } else {
+            width = Math.round(width * (maxDimensao / height));
+            height = maxDimensao;
+          }
+        }
+
+        const canvas = document.createElement('canvas');
+        canvas.width = width;
+        canvas.height = height;
+        canvas.getContext('2d').drawImage(img, 0, 0, width, height);
+
+        canvas.toBlob((blob) => {
+          if (!blob) { resolve(arquivo); return; }
+          const nomeComprimido = arquivo.name.replace(/\.[^.]+$/, '') + '.jpg';
+          resolve(new File([blob], nomeComprimido, { type: 'image/jpeg' }));
+        }, 'image/jpeg', qualidade);
+      };
+
+      img.onerror = () => {
+        URL.revokeObjectURL(url);
+        resolve(arquivo); // se der erro, segue com o arquivo original
+      };
+
+      img.src = url;
+    });
+  }
+
   // Aviso rápido no canto da tela (toast)
   let toastTimer = null;
   function toast(msg) {
@@ -90,5 +137,5 @@ const Utils = (function () {
     toastTimer = setTimeout(() => el.classList.remove('show'), 2200);
   }
 
-  return { brl, dateBR, today, escapeHtml, normalize, onlyDigits, waNumber, copy, downloadFile, toast };
+  return { brl, dateBR, today, escapeHtml, normalize, onlyDigits, waNumber, copy, downloadFile, comprimirImagem, toast };
 })();
