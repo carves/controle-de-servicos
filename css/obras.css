@@ -663,7 +663,87 @@
 }
 
 @media (max-width: 768px) {
-  .tabela-etapas { display: block; overflow-x: auto; white-space: nowrap; }
+  /* Tabela de etapas vira lista de cards empilhados no mobile */
+  .tabela-etapas,
+  .tabela-etapas tbody,
+  .tabela-etapas tfoot,
+  .tabela-etapas tr,
+  .tabela-etapas td {
+    display: block;
+    width: 100%;
+  }
+
+  .tabela-etapas thead { display: none; }
+
+  .tabela-etapas tbody tr {
+    border: 1px solid var(--preto-borda);
+    border-radius: var(--raio);
+    margin: 10px;
+    padding: 10px 12px;
+  }
+
+  .tabela-etapas tbody tr td {
+    border-bottom: none;
+    padding: 6px 0;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .tabela-etapas tbody tr td[data-label]::before {
+    content: attr(data-label);
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+    color: var(--texto-secundario);
+    font-weight: 600;
+    flex-shrink: 0;
+  }
+
+  /* Observação costuma ser texto longo: empilha label em cima do valor */
+  .tabela-etapas tbody tr td.etapa-col-obs {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 4px;
+  }
+
+  .tabela-etapas tbody tr td.etapa-col-acoes {
+    justify-content: flex-end;
+    gap: 8px;
+  }
+
+  .tabela-etapas .no-data {
+    display: block;
+    padding: 16px;
+  }
+
+  /* Linha de adição rápida: formulário vertical de largura total */
+  .linha-add-etapa {
+    border: 1px dashed var(--preto-borda2);
+    border-radius: var(--raio);
+    margin: 10px;
+    padding: 10px;
+    background: var(--preto-surface);
+  }
+
+  .linha-add-etapa td {
+    display: block;
+    padding: 6px 0;
+  }
+
+  .linha-add-etapa input {
+    width: 100%;
+    font-size: 16px; /* evita zoom automático no iOS */
+    padding: 10px;
+  }
+
+  .linha-add-etapa button#btn-add-etapa {
+    width: 100%;
+    margin-top: 4px;
+    padding: 12px;
+    font-size: 14px;
+  }
 }
 
 /* ===== ATIVIDADES ===== */
@@ -952,7 +1032,8 @@
   }
 
   .abas-obra {
-    flex-wrap: wrap;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
   }
 
   .form-container {

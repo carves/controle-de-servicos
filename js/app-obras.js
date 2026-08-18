@@ -313,16 +313,16 @@ const AppObras = (function () {
 
     const linhasHtml = etapas.map(etapa => `
       <tr data-id="${etapa.id}">
-        <td class="etapa-col-titulo">${Utils.escapeHtml(etapa.etapa)}</td>
-        <td class="etapa-col-obs">${Utils.escapeHtml(etapa.descricao || '—')}</td>
-        <td class="etapa-col-status"><span class="status-badge cor-${getCorStatus(etapa.status)}">${etapa.status}</span></td>
-        <td class="etapa-col-progresso">
+        <td class="etapa-col-titulo" data-label="Título">${Utils.escapeHtml(etapa.etapa)}</td>
+        <td class="etapa-col-obs" data-label="Observação">${Utils.escapeHtml(etapa.descricao || '—')}</td>
+        <td class="etapa-col-status" data-label="Status"><span class="status-badge cor-${getCorStatus(etapa.status)}">${etapa.status}</span></td>
+        <td class="etapa-col-progresso" data-label="Progresso">
           <div class="progresso-bar">
             <div class="progresso-fill" style="width: ${etapa.progresso}%"></div>
             <span class="progresso-texto">${etapa.progresso}%</span>
           </div>
         </td>
-        <td class="etapa-col-acoes">
+        <td class="etapa-col-acoes" data-label="Ações">
           <button class="btn-card btn-pequeno" data-acao="editar-etapa" data-id="${etapa.id}">Editar</button>
           <button class="btn-card btn-pequeno btn-deletar" data-acao="deletar-etapa" data-id="${etapa.id}">Deletar</button>
         </td>
