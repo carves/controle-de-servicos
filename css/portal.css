@@ -1,0 +1,86 @@
+/* =========================================================================
+   portal.css — Portal do Cliente (visão pública, somente leitura)
+   ========================================================================= */
+
+body {
+  background: var(--preto);
+}
+
+.portal-container {
+  max-width: 720px;
+  margin: 0 auto;
+  min-height: 100vh;
+  background: var(--preto);
+  color: var(--texto-primario);
+}
+
+.portal-capa {
+  height: 220px;
+  background-size: cover;
+  background-position: center;
+  background-color: var(--preto-surface);
+}
+
+.portal-header {
+  padding: 20px;
+  border-bottom: 1px solid var(--preto-borda);
+}
+
+.portal-header h1 {
+  font-size: 22px;
+  color: var(--esmeralda-claro);
+  margin-bottom: 4px;
+}
+
+.portal-header p {
+  font-size: 13px;
+  color: var(--texto-secundario);
+  margin-bottom: 10px;
+}
+
+.portal-secao {
+  padding: 20px;
+  border-bottom: 1px solid var(--preto-borda);
+}
+
+.portal-secao h2 {
+  font-size: 16px;
+  margin-bottom: 14px;
+}
+
+.portal-etapas-lista {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.portal-etapa-item {
+  background: var(--preto-card);
+  border: 1px solid var(--preto-borda);
+  border-radius: var(--raio);
+  padding: 12px 14px;
+}
+
+.portal-etapa-topo {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 8px;
+  gap: 10px;
+}
+
+.portal-footer {
+  text-align: center;
+  padding: 24px 20px;
+  font-size: 11px;
+  color: var(--texto-fraco);
+}
+
+.portal-erro {
+  padding: 60px 20px;
+  text-align: center;
+}
+
+@media (max-width: 480px) {
+  .portal-capa { height: 160px; }
+}

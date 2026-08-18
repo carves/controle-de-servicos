@@ -136,6 +136,46 @@ const AppObras = (function () {
     document.getElementById('painel-obra-container').style.display = 'none';
   }
 
+  // Mostra o link do Portal do Cliente (página pública só-leitura desta obra)
+  function mostrarLinkPortal() {
+    const obra = estado.obraAtual;
+    if (!obra) return;
+    if (!obra.token_portal) {
+      Utils.toast('Esta obra ainda não tem link de portal — edite e salve a obra para gerar um');
+      return;
+    }
+
+    const base = location.origin + location.pathname.replace('obras.html', '');
+    const url = base + 'portal.html?token=' + obra.token_portal;
+
+    const html = `
+      <div class="form-container">
+        <div class="form-header">
+          <h2>🔗 Portal do Cliente</h2>
+          <button class="btn-fechar-form" onclick="document.getElementById('form-modal-obras').style.display='none'">✕</button>
+        </div>
+        <p class="portal-link-explicacao">Envie este link para o cliente acompanhar o andamento da obra. Ele só consegue ver, não pode editar nada.</p>
+        <input type="text" id="link-portal-input" value="${Utils.escapeHtml(url)}" readonly>
+        <div class="form-botoes">
+          <button type="button" id="btn-copiar-link-portal" class="btn btn-salvar">📋 Copiar Link</button>
+          <button type="button" class="btn btn-cancelar" onclick="document.getElementById('form-modal-obras').style.display='none'">Fechar</button>
+        </div>
+      </div>
+    `;
+
+    const modal = document.getElementById('form-modal-obras');
+    modal.innerHTML = html;
+    modal.style.display = 'flex';
+
+    const input = document.getElementById('link-portal-input');
+    input.addEventListener('click', () => input.select());
+
+    document.getElementById('btn-copiar-link-portal').addEventListener('click', async () => {
+      const ok = await Utils.copy(url);
+      Utils.toast(ok ? 'Link copiado!' : 'Não copiou automático — selecione o texto e copie manualmente');
+    });
+  }
+
   // ===== DIÁRIO DE BORDO =====
   async function carregarDiario() {
     if (!estado.obraAtual) return;
@@ -1026,6 +1066,9 @@ const AppObras = (function () {
 
     // Botão voltar
     document.getElementById('btn-voltar-obras').addEventListener('click', voltarParaLista);
+
+    // Botão do Portal do Cliente
+    document.getElementById('btn-portal-cliente').addEventListener('click', mostrarLinkPortal);
 
     // Busca de obras
     document.getElementById('busca-obras').addEventListener('input', (e) => {

@@ -89,6 +89,18 @@ const StoreObras = (function () {
     }
   }
 
+  // Busca uma obra pelo token público (usado no Portal do Cliente)
+  async function obterObraPorToken(token) {
+    const url = SUPABASE_URL + '/rest/v1/obras?token_portal=eq.' + encodeURIComponent(token) + '&select=*';
+    try {
+      const dados = await chamar(url, { headers: HEADERS });
+      return dados && dados[0] ? dados[0] : null;
+    } catch (e) {
+      console.error('Erro ao obter obra por token:', e);
+      return null;
+    }
+  }
+
   async function criarObra(dados) {
     const url = SUPABASE_URL + '/rest/v1/obras';
     const corpo = {
@@ -377,7 +389,7 @@ const StoreObras = (function () {
 
   return {
     uploadFoto, uploadFotos,
-    obterObras, obterObra, criarObra, atualizarObra, deletarObra,
+    obterObras, obterObra, obterObraPorToken, criarObra, atualizarObra, deletarObra,
     obterDiario, adicionarAnotacao, atualizarAnotacao, deletarAnotacao,
     obterAtividades, adicionarAtividade, atualizarAtividade, deletarAtividade,
     obterMateriais, adicionarMaterial, atualizarMaterial, deletarMaterial,

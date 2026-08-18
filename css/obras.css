@@ -514,6 +514,24 @@
   font-style: italic;
 }
 
+.portal-link-explicacao {
+  font-size: 13px;
+  color: var(--texto-secundario);
+  margin-bottom: 14px;
+  line-height: 1.5;
+}
+
+#link-portal-input {
+  width: 100%;
+  padding: 12px;
+  margin-bottom: 14px;
+  background: var(--preto-surface);
+  border: 1px solid var(--preto-borda2);
+  border-radius: var(--raio);
+  color: var(--texto-primario);
+  font-size: 13px;
+}
+
 .preview-foto-item {
   position: relative;
   width: 70px;
