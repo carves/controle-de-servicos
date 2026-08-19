@@ -435,6 +435,43 @@ const AppObras = (function () {
     renderizarCronograma(cronograma);
   }
 
+  // Cola o orçamento aprovado (descrição / unidade / quantidade / tempo de
+  // execução / profissional / observações) e gera as etapas do cronograma de
+  // uma vez, na ordem em que apareceram. Sempre adiciona ao final — para
+  // remover uma etapa antiga, usa o botão "Deletar" da lista. Sem valor por
+  // enquanto — a métrica de orçamento aqui é execução, não dinheiro.
+  async function abrirImportarCronograma() {
+    if (!estado.obraAtual) return;
+    const cronogramaAtual = await StoreObras.obterCronograma(estado.obraAtual.id);
+    GridImport.abrir({
+      titulo: 'Importar orçamento aprovado',
+      colunas: [
+        { chave: 'descricao', label: 'Descrição', obrigatorio: true, tipo: 'texto' },
+        { chave: 'unidade', label: 'Unidade', obrigatorio: false, tipo: 'texto' },
+        { chave: 'quantidade', label: 'Quantidade', obrigatorio: false, tipo: 'numero' },
+        { chave: 'tempo_execucao', label: 'Tempo de execução', obrigatorio: false, tipo: 'texto' },
+        { chave: 'profissional', label: 'Profissional', obrigatorio: false, tipo: 'texto' },
+        { chave: 'observacoes', label: 'Observações', obrigatorio: false, tipo: 'texto' }
+      ],
+      existentes: cronogramaAtual.map(e => e.etapa),
+      campoDuplicata: 'descricao',
+      sugestoes: { profissional: [...new Set(cronogramaAtual.map(e => e.profissional).filter(Boolean))] },
+      aoConfirmar: async (linhas) => {
+        const gravadas = await StoreObras.importarEtapas(estado.obraAtual.id, linhas);
+        await carregarCronograma();
+        Utils.toast(`${gravadas.length} item(ns) importado(s)`);
+        return gravadas.map(g => ({
+          descricao: g.etapa,
+          unidade: g.unidade || '',
+          quantidade: g.quantidade ?? '',
+          tempo_execucao: g.tempo_execucao || '',
+          profissional: g.profissional || '',
+          observacoes: g.descricao || ''
+        }));
+      }
+    });
+  }
+
   function renderizarCronograma(etapas) {
     const container = document.getElementById('cronograma-lista');
 
@@ -626,6 +663,34 @@ const AppObras = (function () {
     renderizarRevisao(revisao);
   }
 
+  // Cola a lista de pendências levantadas na vistoria final da arquiteta
+  // (descrição / ambiente / responsável) e grava tudo de uma vez.
+  async function abrirImportarRevisao() {
+    if (!estado.obraAtual) return;
+    const revisaoAtual = await StoreObras.obterRevisao(estado.obraAtual.id);
+    GridImport.abrir({
+      titulo: 'Importar lista de vistoria',
+      colunas: [
+        { chave: 'descricao', label: 'Pendência', obrigatorio: true, tipo: 'texto' },
+        { chave: 'ambiente', label: 'Ambiente', obrigatorio: false, tipo: 'texto' },
+        { chave: 'responsavel', label: 'Responsável', obrigatorio: false, tipo: 'texto' }
+      ],
+      existentes: revisaoAtual.map(r => r.item),
+      campoDuplicata: 'descricao',
+      sugestoes: { responsavel: [...new Set(revisaoAtual.map(r => r.responsavel).filter(Boolean))] },
+      aoConfirmar: async (linhas) => {
+        const gravadas = await StoreObras.importarRevisao(estado.obraAtual.id, linhas);
+        await carregarRevisao();
+        Utils.toast(`${gravadas.length} item(ns) de vistoria importado(s)`);
+        return gravadas.map(g => ({
+          descricao: g.item,
+          ambiente: (g.observacao || '').replace(/^Ambiente:\s*/, ''),
+          responsavel: g.responsavel || ''
+        }));
+      }
+    });
+  }
+
   function renderizarRevisao(itens) {
     const container = document.getElementById('revisao-lista');
 
@@ -799,6 +864,33 @@ const AppObras = (function () {
     if (!estado.obraAtual) return;
     const atividades = await StoreObras.obterAtividades(estado.obraAtual.id);
     renderizarAtividades(atividades);
+  }
+
+  // Cola as tarefas do dia (descrição / responsável / data / status) e grava
+  // tudo de uma vez, em vez de abrir o formulário uma tarefa por vez.
+  async function abrirImportarAtividades() {
+    if (!estado.obraAtual) return;
+    const atividadesAtuais = await StoreObras.obterAtividades(estado.obraAtual.id);
+    GridImport.abrir({
+      titulo: 'Importar tarefas',
+      colunas: [
+        { chave: 'descricao', label: 'Descrição', obrigatorio: true, tipo: 'texto' },
+        { chave: 'responsavel', label: 'Responsável', obrigatorio: false, tipo: 'texto' },
+        { chave: 'data', label: 'Data', obrigatorio: false, tipo: 'data' },
+        { chave: 'status', label: 'Status', obrigatorio: false, tipo: 'texto' }
+      ],
+      existentes: atividadesAtuais.map(a => a.titulo),
+      campoDuplicata: 'descricao',
+      sugestoes: { responsavel: [...new Set(atividadesAtuais.map(a => a.responsavel).filter(Boolean))] },
+      aoConfirmar: async (linhas) => {
+        const gravadas = await StoreObras.importarAtividades(estado.obraAtual.id, linhas);
+        await carregarAtividades();
+        Utils.toast(`${gravadas.length} tarefa(s) importada(s)`);
+        return gravadas.map(g => ({
+          descricao: g.titulo, responsavel: g.responsavel || '', data: g.data_prevista || '', status: g.status || ''
+        }));
+      }
+    });
   }
 
   function renderizarAtividades(atividades) {
@@ -1396,6 +1488,9 @@ const AppObras = (function () {
       else if (e.target.id === 'btn-exportar-diario') await exportarDiarioPDF();
       else if (e.target.id === 'btn-nova-atividade') await abrirFormularioAtividade();
       else if (e.target.id === 'btn-novo-material') await abrirFormularioMaterial();
+      else if (e.target.id === 'btn-importar-cronograma') abrirImportarCronograma();
+      else if (e.target.id === 'btn-importar-atividades') abrirImportarAtividades();
+      else if (e.target.id === 'btn-importar-revisao') abrirImportarRevisao();
     });
 
     // Carregar obras inicialmente

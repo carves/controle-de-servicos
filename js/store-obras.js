@@ -445,6 +445,73 @@ const StoreObras = (function () {
     }
   }
 
+  // ===== CARGA EM MASSA (usado pelo GridImport — grava várias linhas de uma vez) =====
+
+  // Insere um array de registros numa tabela e devolve as linhas gravadas
+  // (usado na conferência pós-carga: comparar o que foi colado com o que voltou do banco).
+  async function inserirLote(tabela, registros) {
+    if (!registros || registros.length === 0) return [];
+    const url = SUPABASE_URL + '/rest/v1/' + tabela;
+    return await chamar(url, {
+      method: 'POST',
+      headers: { ...HEADERS, 'Prefer': 'return=representation' },
+      body: JSON.stringify(registros)
+    });
+  }
+
+  // Cola um orçamento aprovado (descrição / unidade / quantidade / tempo de
+  // execução / profissional / observações) e grava direto no cronograma da
+  // obra. Sempre adiciona ao final — nunca substitui etapas existentes.
+  async function importarEtapas(obraId, linhas) {
+    const cronogramaAtual = await obterCronograma(obraId);
+    let ordem = cronogramaAtual.length > 0
+      ? Math.max(...cronogramaAtual.map(e => e.ordem || 0)) + 10
+      : 10;
+    const registros = linhas.map(l => {
+      const reg = {
+        obra_id: obraId,
+        etapa: l.descricao,
+        unidade: l.unidade || '',
+        quantidade: l.quantidade,
+        tempo_execucao: l.tempo_execucao || '',
+        profissional: l.profissional || '',
+        descricao: l.observacoes || '',
+        status: 'Planejado',
+        progresso: 0,
+        ordem
+      };
+      ordem += 10;
+      return reg;
+    });
+    return await inserirLote('cronograma_obra', registros);
+  }
+
+  // Cola a lista de tarefas do dia (descrição / responsável / data / status)
+  // e grava direto em atividades_obra.
+  async function importarAtividades(obraId, linhas) {
+    const registros = linhas.map(l => ({
+      obra_id: obraId,
+      titulo: l.descricao,
+      responsavel: l.responsavel || '',
+      data_prevista: l.data || null,
+      status: l.status || 'Planejado'
+    }));
+    return await inserirLote('atividades_obra', registros);
+  }
+
+  // Cola a lista de pendências da vistoria final da arquiteta
+  // (descrição / ambiente / responsável) e grava em revisao_obra.
+  async function importarRevisao(obraId, linhas) {
+    const registros = linhas.map(l => ({
+      obra_id: obraId,
+      item: l.descricao,
+      observacao: l.ambiente ? ('Ambiente: ' + l.ambiente) : '',
+      responsavel: l.responsavel || '',
+      status: 'Pendente'
+    }));
+    return await inserirLote('revisao_obra', registros);
+  }
+
   return {
     uploadFoto, uploadFotos,
     obterObras, obterObra, obterObraPorToken, criarObra, atualizarObra, deletarObra,
@@ -452,6 +519,7 @@ const StoreObras = (function () {
     obterAtividades, adicionarAtividade, atualizarAtividade, deletarAtividade,
     obterMateriais, adicionarMaterial, atualizarMaterial, deletarMaterial,
     obterCronograma, adicionarEtapa, atualizarEtapa, deletarEtapa,
-    obterRevisao, adicionarRevisao, atualizarRevisao, deletarRevisao
+    obterRevisao, adicionarRevisao, atualizarRevisao, deletarRevisao,
+    inserirLote, importarEtapas, importarAtividades, importarRevisao
   };
 })();
