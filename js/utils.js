@@ -122,6 +122,84 @@ const Utils = (function () {
     });
   }
 
+  // ===== GALERIA DE FOTOS (compartilhado por Serviços e Obras) =====
+
+  // Abre uma foto em tamanho grande (lightbox)
+  function abrirLightbox(url) {
+    const overlay = document.createElement('div');
+    overlay.className = 'lightbox-overlay';
+    overlay.innerHTML = `<img src="${escapeHtml(url)}" alt="Foto ampliada">`;
+    overlay.addEventListener('click', () => overlay.remove());
+    document.body.appendChild(overlay);
+  }
+
+  // Monta o HTML de uma galeria de miniaturas clicáveis
+  function htmlGaleriaFotos(fotos) {
+    if (!fotos || fotos.length === 0) return '';
+    return `
+      <div class="diario-fotos">
+        ${fotos.map(url => `<img src="${escapeHtml(url)}" alt="Foto" class="diario-foto-thumb" data-url="${escapeHtml(url)}">`).join('')}
+      </div>
+    `;
+  }
+
+  // Anexa o clique de lightbox às miniaturas dentro de um container já renderizado
+  function ativarGaleriaFotos(container) {
+    container.querySelectorAll('.diario-foto-thumb').forEach(img => {
+      img.addEventListener('click', () => abrirLightbox(img.dataset.url));
+    });
+  }
+
+  // Cria um seletor de fotos reutilizável (preview + upload + remoção) dentro
+  // de um formulário. Chame fotosFinais() no submit para obter a lista de URLs
+  // final (fotos antigas mantidas + novas já comprimidas e enviadas).
+  // `storeModule` precisa ter uploadFotos(arquivos, bucket).
+  function criarSeletorFotos(fotosIniciais, idInput, idPreview, storeModule, bucket = 'diario-fotos') {
+    let fotosExistentes = [...(fotosIniciais || [])];
+    const input = document.getElementById(idInput);
+    const preview = document.getElementById(idPreview);
+
+    function render() {
+      const existentesHtml = fotosExistentes.map((url, i) => `
+        <div class="preview-foto-item">
+          <img src="${escapeHtml(url)}" alt="Foto">
+          <button type="button" class="remover-foto" data-idx="${i}">✕</button>
+        </div>
+      `).join('');
+
+      const novasHtml = Array.from(input.files || []).map(arquivo => `
+        <div class="preview-foto-item preview-foto-nova">
+          <img src="${URL.createObjectURL(arquivo)}" alt="Nova foto">
+          <span class="preview-foto-badge">novo</span>
+        </div>
+      `).join('');
+
+      preview.innerHTML = existentesHtml + novasHtml;
+
+      preview.querySelectorAll('.remover-foto').forEach(btn => {
+        btn.addEventListener('click', () => {
+          fotosExistentes.splice(parseInt(btn.dataset.idx), 1);
+          render();
+        });
+      });
+    }
+
+    render();
+    input.addEventListener('change', render);
+
+    return {
+      async fotosFinais() {
+        const arquivos = input.files;
+        let urlsNovas = [];
+        if (arquivos.length > 0) {
+          const comprimidos = await Promise.all(Array.from(arquivos).map(a => comprimirImagem(a)));
+          urlsNovas = await storeModule.uploadFotos(comprimidos, bucket);
+        }
+        return [...fotosExistentes, ...urlsNovas];
+      }
+    };
+  }
+
   // Aviso rápido no canto da tela (toast)
   let toastTimer = null;
   function toast(msg) {
@@ -137,5 +215,9 @@ const Utils = (function () {
     toastTimer = setTimeout(() => el.classList.remove('show'), 2200);
   }
 
-  return { brl, dateBR, today, escapeHtml, normalize, onlyDigits, waNumber, copy, downloadFile, comprimirImagem, toast };
+  return {
+    brl, dateBR, today, escapeHtml, normalize, onlyDigits, waNumber, copy, downloadFile,
+    comprimirImagem, abrirLightbox, htmlGaleriaFotos, ativarGaleriaFotos, criarSeletorFotos,
+    toast
+  };
 })();

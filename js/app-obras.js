@@ -107,6 +107,11 @@ const AppObras = (function () {
     return cores[status] || 'gray';
   }
 
+  // Atalho local: seletor de fotos usando o StoreObras para upload
+  function criarSeletorFotos(fotosIniciais, idInput, idPreview, bucket = 'diario-fotos') {
+    return Utils.criarSeletorFotos(fotosIniciais, idInput, idPreview, StoreObras, bucket);
+  }
+
   // ===== ABRE OBRA INDIVIDUAL =====
   async function abrirObra(id) {
     const obra = estado.obras.find(o => o.id === id);
@@ -266,11 +271,7 @@ const AppObras = (function () {
           <p>${Utils.escapeHtml(reg.descricao)}</p>
           ${reg.clima ? `<p class="diario-campo">🌤️ Clima: ${Utils.escapeHtml(reg.clima)}</p>` : ''}
           ${reg.pessoal_presente ? `<p class="diario-campo">👥 Pessoal: ${Utils.escapeHtml(reg.pessoal_presente)}</p>` : ''}
-          ${reg.fotos && reg.fotos.length > 0 ? `
-            <div class="diario-fotos">
-              ${reg.fotos.map(url => `<img src="${Utils.escapeHtml(url)}" alt="Foto do diário" class="diario-foto-thumb" data-acao="ver-foto" data-url="${Utils.escapeHtml(url)}">`).join('')}
-            </div>
-          ` : ''}
+          ${Utils.htmlGaleriaFotos(reg.fotos)}
         </div>
         <div class="diario-footer">
           <button class="btn-card btn-pequeno" data-acao="editar-diario" data-id="${reg.id}">Editar</button>
@@ -280,28 +281,16 @@ const AppObras = (function () {
     `).join('');
 
     container.innerHTML = html;
+    Utils.ativarGaleriaFotos(container);
 
     container.querySelectorAll('[data-acao]').forEach(btn => {
       btn.addEventListener('click', (e) => {
         const acao = e.target.dataset.acao;
-        if (acao === 'ver-foto') {
-          abrirLightbox(e.target.dataset.url);
-          return;
-        }
         const id = parseInt(e.target.dataset.id);
         if (acao === 'editar-diario') abrirFormularioDiario(id);
         else if (acao === 'deletar-diario') deletarDiarioConfirma(id);
       });
     });
-  }
-
-  // Abre foto em tamanho grande (lightbox simples)
-  function abrirLightbox(url) {
-    const overlay = document.createElement('div');
-    overlay.className = 'lightbox-overlay';
-    overlay.innerHTML = `<img src="${Utils.escapeHtml(url)}" alt="Foto ampliada">`;
-    overlay.addEventListener('click', () => overlay.remove());
-    document.body.appendChild(overlay);
   }
 
   async function abrirFormularioDiario(id = null) {
@@ -630,6 +619,181 @@ const AppObras = (function () {
     }
   }
 
+  // ===== REVISÃO FINAL (observações da arquiteta/cliente para correção) =====
+  async function carregarRevisao() {
+    if (!estado.obraAtual) return;
+    const revisao = await StoreObras.obterRevisao(estado.obraAtual.id);
+    renderizarRevisao(revisao);
+  }
+
+  function renderizarRevisao(itens) {
+    const container = document.getElementById('revisao-lista');
+
+    const linhasHtml = itens.map(it => `
+      <tr data-id="${it.id}">
+        <td class="etapa-col-titulo" data-label="Item">${Utils.escapeHtml(it.item)}</td>
+        <td class="etapa-col-obs" data-label="Observação">${Utils.escapeHtml(it.observacao || '—')}</td>
+        <td class="etapa-col-status" data-label="Status">
+          <span class="status-badge cor-${it.status === 'Corrigido' ? 'green' : 'orange'}">${it.status}</span>
+        </td>
+        <td class="etapa-col-progresso" data-label="Fotos">${it.fotos && it.fotos.length > 0 ? `📷 ${it.fotos.length}` : '—'}</td>
+        <td class="etapa-col-acoes" data-label="Ações">
+          <button class="btn-card btn-pequeno" data-acao="editar-revisao" data-id="${it.id}">Editar</button>
+          <button class="btn-card btn-pequeno btn-deletar" data-acao="deletar-revisao" data-id="${it.id}">Deletar</button>
+        </td>
+      </tr>
+    `).join('');
+
+    container.innerHTML = `
+      <table class="tabela-etapas">
+        <thead>
+          <tr>
+            <th class="etapa-col-titulo">Item</th>
+            <th class="etapa-col-obs">Observação</th>
+            <th class="etapa-col-status">Status</th>
+            <th class="etapa-col-progresso">Fotos</th>
+            <th class="etapa-col-acoes">Ações</th>
+          </tr>
+        </thead>
+        <tbody id="revisao-tbody">
+          ${linhasHtml || `<tr><td colspan="5" class="no-data">Nenhum item de revisão cadastrado</td></tr>`}
+        </tbody>
+        <tfoot>
+          <tr class="linha-add-etapa">
+            <td><input type="text" id="add-revisao-item" placeholder="O que precisa corrigir"></td>
+            <td><input type="text" id="add-revisao-obs" placeholder="Observação (opcional)"></td>
+            <td colspan="3"><button id="btn-add-revisao" class="btn btn-pequeno btn-prim">➕ Adicionar</button></td>
+          </tr>
+        </tfoot>
+      </table>
+    `;
+
+    container.querySelectorAll('[data-acao]').forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        const acao = e.target.dataset.acao;
+        const id = parseInt(e.target.dataset.id);
+        if (acao === 'editar-revisao') abrirFormularioRevisao(id);
+        else if (acao === 'deletar-revisao') deletarRevisaoConfirma(id);
+      });
+    });
+
+    // Adição rápida via linha da tabela (sem abrir modal)
+    const inputItem = document.getElementById('add-revisao-item');
+    const inputObs = document.getElementById('add-revisao-obs');
+    const btnAdd = document.getElementById('btn-add-revisao');
+
+    async function adicionarRapido() {
+      const item = inputItem.value.trim();
+      if (!item) { inputItem.focus(); return; }
+      try {
+        btnAdd.disabled = true;
+        await StoreObras.adicionarRevisao(estado.obraAtual.id, {
+          item,
+          observacao: inputObs.value.trim(),
+          status: 'Pendente'
+        });
+        await carregarRevisao();
+        setTimeout(() => document.getElementById('add-revisao-item')?.focus(), 0);
+      } catch (e) {
+        Utils.toast('Erro ao adicionar: ' + e.message);
+        btnAdd.disabled = false;
+      }
+    }
+
+    btnAdd.addEventListener('click', adicionarRapido);
+    [inputItem, inputObs].forEach(input => {
+      input.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter') { e.preventDefault(); adicionarRapido(); }
+      });
+    });
+  }
+
+  async function abrirFormularioRevisao(id = null) {
+    let dados = { item: '', observacao: '', responsavel: '', status: 'Pendente', fotos: [] };
+
+    if (id) {
+      const itens = await StoreObras.obterRevisao(estado.obraAtual.id);
+      const it = itens.find(i => i.id === id);
+      if (it) dados = it;
+    }
+
+    const html = `
+      <div class="form-container">
+        <div class="form-header">
+          <h2>${id ? 'Editar Item de Revisão' : 'Novo Item de Revisão'}</h2>
+          <button class="btn-fechar-form" onclick="document.getElementById('form-modal-obras').style.display='none'">✕</button>
+        </div>
+        <form id="form-revisao">
+          <input type="text" id="form-revisao-item" placeholder="O que precisa corrigir" value="${Utils.escapeHtml(dados.item)}" required>
+          <textarea id="form-revisao-obs" placeholder="Observação detalhada">${Utils.escapeHtml(dados.observacao || '')}</textarea>
+          <input type="text" id="form-revisao-responsavel" placeholder="Quem apontou (ex: arquiteta, cliente)" value="${Utils.escapeHtml(dados.responsavel || '')}">
+          <select id="form-revisao-status">
+            <option value="Pendente" ${dados.status === 'Pendente' ? 'selected' : ''}>Pendente</option>
+            <option value="Corrigido" ${dados.status === 'Corrigido' ? 'selected' : ''}>Corrigido</option>
+          </select>
+
+          <label class="campo-fotos-label">📷 Fotos</label>
+          <div id="preview-fotos-revisao" class="preview-fotos"></div>
+          <input type="file" id="form-revisao-fotos" accept="image/*" capture="environment" multiple>
+
+          <div class="form-botoes">
+            <button type="submit" class="btn btn-salvar">Salvar</button>
+            <button type="button" class="btn btn-cancelar" onclick="document.getElementById('form-modal-obras').style.display='none'">Cancelar</button>
+          </div>
+        </form>
+      </div>
+    `;
+
+    const modal = document.getElementById('form-modal-obras');
+    modal.innerHTML = html;
+    modal.style.display = 'flex';
+
+    const seletorFotos = criarSeletorFotos(dados.fotos, 'form-revisao-fotos', 'preview-fotos-revisao');
+
+    document.getElementById('form-revisao').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const submitBtn = e.target.querySelector('.btn-salvar');
+
+      const formDados = {
+        item: document.getElementById('form-revisao-item').value,
+        observacao: document.getElementById('form-revisao-obs').value,
+        responsavel: document.getElementById('form-revisao-responsavel').value,
+        status: document.getElementById('form-revisao-status').value
+      };
+
+      try {
+        submitBtn.disabled = true;
+        submitBtn.textContent = 'Enviando...';
+        formDados.fotos = await seletorFotos.fotosFinais();
+
+        if (id) {
+          await StoreObras.atualizarRevisao(id, formDados);
+          Utils.toast('Item atualizado');
+        } else {
+          await StoreObras.adicionarRevisao(estado.obraAtual.id, formDados);
+          Utils.toast('Item criado');
+        }
+        modal.style.display = 'none';
+        await carregarRevisao();
+      } catch (e) {
+        Utils.toast('Erro: ' + e.message);
+        submitBtn.disabled = false;
+        submitBtn.textContent = 'Salvar';
+      }
+    });
+  }
+
+  async function deletarRevisaoConfirma(id) {
+    if (!confirm('Deletar este item de revisão?')) return;
+    try {
+      await StoreObras.deletarRevisao(id);
+      Utils.toast('Deletado');
+      await carregarRevisao();
+    } catch (e) {
+      Utils.toast('Erro ao deletar');
+    }
+  }
+
   // ===== ATIVIDADES =====
   async function carregarAtividades() {
     if (!estado.obraAtual) return;
@@ -658,6 +822,7 @@ const AppObras = (function () {
           <p><strong>Responsável:</strong> ${Utils.escapeHtml(at.responsavel || '—')}</p>
           <p><strong>Previsão:</strong> ${Utils.dateBR(at.data_prevista) || '—'}</p>
           ${at.data_conclusao ? `<p><strong>Concluída em:</strong> ${Utils.dateBR(at.data_conclusao)}</p>` : ''}
+          ${Utils.htmlGaleriaFotos(at.fotos)}
         </div>
         <div class="atividade-footer">
           <button class="btn-card btn-pequeno" data-acao="editar-atividade" data-id="${at.id}">Editar</button>
@@ -667,6 +832,7 @@ const AppObras = (function () {
     `).join('');
 
     container.innerHTML = html;
+    Utils.ativarGaleriaFotos(container);
 
     container.querySelectorAll('[data-acao]').forEach(btn => {
       btn.addEventListener('click', (e) => {
@@ -685,7 +851,8 @@ const AppObras = (function () {
       responsavel: '',
       data_prevista: '',
       status: 'Planejado',
-      prioridade: 'Média'
+      prioridade: 'Média',
+      fotos: []
     };
 
     if (id) {
@@ -717,6 +884,11 @@ const AppObras = (function () {
             <option value="Média" ${dados.prioridade === 'Média' ? 'selected' : ''}>Média</option>
             <option value="Alta" ${dados.prioridade === 'Alta' ? 'selected' : ''}>Alta</option>
           </select>
+
+          <label class="campo-fotos-label">📷 Fotos</label>
+          <div id="preview-fotos-atividade" class="preview-fotos"></div>
+          <input type="file" id="form-atividade-fotos" accept="image/*" capture="environment" multiple>
+
           <div class="form-botoes">
             <button type="submit" class="btn btn-salvar">Salvar</button>
             <button type="button" class="btn btn-cancelar" onclick="document.getElementById('form-modal-obras').style.display='none'">Cancelar</button>
@@ -729,8 +901,12 @@ const AppObras = (function () {
     modal.innerHTML = html;
     modal.style.display = 'flex';
 
+    const seletorFotos = criarSeletorFotos(dados.fotos, 'form-atividade-fotos', 'preview-fotos-atividade');
+
     document.getElementById('form-atividade').addEventListener('submit', async (e) => {
       e.preventDefault();
+      const submitBtn = e.target.querySelector('.btn-salvar');
+
       const formDados = {
         titulo: document.getElementById('form-atividade-titulo').value,
         descricao: document.getElementById('form-atividade-desc').value,
@@ -741,6 +917,10 @@ const AppObras = (function () {
       };
 
       try {
+        submitBtn.disabled = true;
+        submitBtn.textContent = 'Enviando...';
+        formDados.fotos = await seletorFotos.fotosFinais();
+
         if (id) {
           await StoreObras.atualizarAtividade(id, formDados);
           Utils.toast('Atividade atualizada');
@@ -752,6 +932,8 @@ const AppObras = (function () {
         await carregarAtividades();
       } catch (e) {
         Utils.toast('Erro: ' + e.message);
+        submitBtn.disabled = false;
+        submitBtn.textContent = 'Salvar';
       }
     });
   }
@@ -795,6 +977,7 @@ const AppObras = (function () {
           <p><strong>Entrega Prevista:</strong> ${Utils.dateBR(mat.data_entrega_prevista) || '—'}</p>
           ${mat.data_entrega ? `<p><strong>Entregue em:</strong> ${Utils.dateBR(mat.data_entrega)}</p>` : ''}
           ${mat.observacoes ? `<p><strong>Obs:</strong> ${Utils.escapeHtml(mat.observacoes)}</p>` : ''}
+          ${Utils.htmlGaleriaFotos(mat.fotos)}
         </div>
         <div class="material-footer">
           <button class="btn-card btn-pequeno" data-acao="editar-material" data-id="${mat.id}">Editar</button>
@@ -804,6 +987,7 @@ const AppObras = (function () {
     `).join('');
 
     container.innerHTML = html;
+    Utils.ativarGaleriaFotos(container);
 
     container.querySelectorAll('[data-acao]').forEach(btn => {
       btn.addEventListener('click', (e) => {
@@ -825,7 +1009,8 @@ const AppObras = (function () {
       data_entrega_prevista: '',
       valor: '',
       status: 'Planejado',
-      observacoes: ''
+      observacoes: '',
+      fotos: []
     };
 
     if (id) {
@@ -857,6 +1042,11 @@ const AppObras = (function () {
             <option value="Cancelado" ${dados.status === 'Cancelado' ? 'selected' : ''}>Cancelado</option>
           </select>
           <textarea id="form-material-obs" placeholder="Observações">${Utils.escapeHtml(dados.observacoes || '')}</textarea>
+
+          <label class="campo-fotos-label">📷 Fotos</label>
+          <div id="preview-fotos-material" class="preview-fotos"></div>
+          <input type="file" id="form-material-fotos" accept="image/*" capture="environment" multiple>
+
           <div class="form-botoes">
             <button type="submit" class="btn btn-salvar">Salvar</button>
             <button type="button" class="btn btn-cancelar" onclick="document.getElementById('form-modal-obras').style.display='none'">Cancelar</button>
@@ -869,8 +1059,12 @@ const AppObras = (function () {
     modal.innerHTML = html;
     modal.style.display = 'flex';
 
+    const seletorFotos = criarSeletorFotos(dados.fotos, 'form-material-fotos', 'preview-fotos-material');
+
     document.getElementById('form-material').addEventListener('submit', async (e) => {
       e.preventDefault();
+      const submitBtn = e.target.querySelector('.btn-salvar');
+
       const formDados = {
         descricao: document.getElementById('form-material-desc').value,
         quantidade: document.getElementById('form-material-qtd').value,
@@ -884,6 +1078,10 @@ const AppObras = (function () {
       };
 
       try {
+        submitBtn.disabled = true;
+        submitBtn.textContent = 'Enviando...';
+        formDados.fotos = await seletorFotos.fotosFinais();
+
         if (id) {
           await StoreObras.atualizarMaterial(id, formDados);
           Utils.toast('Material atualizado');
@@ -895,6 +1093,8 @@ const AppObras = (function () {
         await carregarMateriais();
       } catch (e) {
         Utils.toast('Erro: ' + e.message);
+        submitBtn.disabled = false;
+        submitBtn.textContent = 'Salvar';
       }
     });
   }
@@ -908,6 +1108,92 @@ const AppObras = (function () {
     } catch (e) {
       Utils.toast('Erro ao deletar');
     }
+  }
+
+  // ===== RESUMO DA OBRA =====
+  async function carregarResumo() {
+    if (!estado.obraAtual) return;
+    const obraId = estado.obraAtual.id;
+    const [etapas, diario, atividades, materiais, revisao] = await Promise.all([
+      StoreObras.obterCronograma(obraId),
+      StoreObras.obterDiario(obraId),
+      StoreObras.obterAtividades(obraId),
+      StoreObras.obterMateriais(obraId),
+      StoreObras.obterRevisao(obraId)
+    ]);
+    renderizarResumo(etapas, diario, atividades, materiais, revisao);
+  }
+
+  function contarPorStatus(itens) {
+    const contagem = {};
+    itens.forEach(it => {
+      contagem[it.status] = (contagem[it.status] || 0) + 1;
+    });
+    return contagem;
+  }
+
+  function htmlContagem(contagem) {
+    const chaves = Object.keys(contagem);
+    if (chaves.length === 0) return '<p class="sem-foto-texto">Nada cadastrado ainda.</p>';
+    return chaves.map(status => `
+      <div class="resumo-linha">
+        <span>${Utils.escapeHtml(status)}</span>
+        <strong>${contagem[status]}</strong>
+      </div>
+    `).join('');
+  }
+
+  function renderizarResumo(etapas, diario, atividades, materiais, revisao) {
+    const container = document.getElementById('resumo-conteudo');
+
+    // Progresso geral das etapas (média simples)
+    const progressoMedio = etapas.length > 0
+      ? Math.round(etapas.reduce((soma, e) => soma + (e.progresso || 0), 0) / etapas.length)
+      : 0;
+    const etapasConcluidas = etapas.filter(e => e.status === 'Concluída').length;
+
+    // Diário: total de registros e data do último
+    const diarioOrdenado = [...diario].sort((a, b) => new Date(b.data) - new Date(a.data));
+    const ultimoRegistro = diarioOrdenado[0];
+
+    // Revisão: pendentes vs corrigidos
+    const revisaoPendente = revisao.filter(r => r.status !== 'Corrigido').length;
+    const revisaoCorrigida = revisao.filter(r => r.status === 'Corrigido').length;
+
+    container.innerHTML = `
+      <div class="resumo-cards">
+        <div class="card-resumo">
+          <h4>Progresso das Etapas</h4>
+          <div class="progresso-bar">
+            <div class="progresso-fill" style="width:${progressoMedio}%"></div>
+            <span class="progresso-texto">${progressoMedio}%</span>
+          </div>
+          <p class="resumo-detalhe">${etapasConcluidas} de ${etapas.length} etapa(s) concluída(s)</p>
+        </div>
+
+        <div class="card-resumo">
+          <h4>📖 Diário de Bordo</h4>
+          <p class="resumo-detalhe"><strong>${diario.length}</strong> registro(s) no total</p>
+          ${ultimoRegistro ? `<p class="resumo-detalhe">Último em ${Utils.dateBR(ultimoRegistro.data)} por ${Utils.escapeHtml(ultimoRegistro.autor || 'equipe')}</p>` : '<p class="sem-foto-texto">Nenhum registro ainda.</p>'}
+        </div>
+
+        <div class="card-resumo">
+          <h4>✓ Atividades</h4>
+          ${htmlContagem(contarPorStatus(atividades))}
+        </div>
+
+        <div class="card-resumo">
+          <h4>📦 Materiais</h4>
+          ${htmlContagem(contarPorStatus(materiais))}
+        </div>
+
+        <div class="card-resumo">
+          <h4>🔍 Revisão Final</h4>
+          <div class="resumo-linha"><span>Pendente</span><strong>${revisaoPendente}</strong></div>
+          <div class="resumo-linha"><span>Corrigido</span><strong>${revisaoCorrigida}</strong></div>
+        </div>
+      </div>
+    `;
   }
 
   // ===== FORMULÁRIO DE OBRA =====
@@ -1099,6 +1385,8 @@ const AppObras = (function () {
         else if (aba === 'cronograma') await carregarCronograma();
         else if (aba === 'atividades') await carregarAtividades();
         else if (aba === 'materiais') await carregarMateriais();
+        else if (aba === 'revisao') await carregarRevisao();
+        else if (aba === 'resumo') await carregarResumo();
       });
     });
 

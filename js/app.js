@@ -14,6 +14,9 @@ const App = (function () {
     osEmEdicao: null         // qual OS (null = novo)
   };
 
+  // Seletor de fotos do formulário atual (recriado toda vez que o modal abre)
+  let seletorFotosServico = null;
+
   // Recarrega as OS do store, aplica filtros e ordenação
   async function recarregar() {
     estado.ordens = await Store.obterTodos();
@@ -241,7 +244,7 @@ const App = (function () {
         cliente: '', telefone: '', endereco: '', tipo: '', descricao: '', observacoes: '',
         dataSolicitacao: Utils.today(), dataVisita: '', dataOrcamento: '', dataFinalizacao: '',
         status: Config.PADRAO.status, prioridade: Config.PADRAO.prioridade,
-        valor: '', pago: false, formaPagamento: '', recebidoPor: ''
+        valor: '', pago: false, formaPagamento: '', recebidoPor: '', fotos: []
       };
     }
 
@@ -317,6 +320,12 @@ const App = (function () {
             <input type="text" id="form-recebido" placeholder="Recebido por" value="${Utils.escapeHtml(os.recebidoPor || '')}">
           </fieldset>
 
+          <fieldset>
+            <legend>Fotos</legend>
+            <div id="preview-fotos-servico" class="preview-fotos"></div>
+            <input type="file" id="form-servico-fotos" accept="image/*" capture="environment" multiple>
+          </fieldset>
+
           <div class="form-botoes">
             <button type="submit" class="btn btn-salvar">Salvar</button>
             <button type="button" id="form-cancelar" class="btn btn-cancelar">Cancelar</button>
@@ -329,10 +338,12 @@ const App = (function () {
     modal.innerHTML = html;
     modal.style.display = 'flex';
 
+    seletorFotosServico = Utils.criarSeletorFotos(os.fotos, 'form-servico-fotos', 'preview-fotos-servico', Store, 'servicos-fotos');
+
     // Eventos do formulário
     document.getElementById('form-servico').addEventListener('submit', async (e) => {
       e.preventDefault();
-      await salvarServico();
+      await salvarServico(e.target);
     });
 
     document.getElementById('fechar-form').addEventListener('click', fecharFormulario);
@@ -340,12 +351,14 @@ const App = (function () {
   }
 
   // Salva a OS (novo ou edição)
-  async function salvarServico() {
+  async function salvarServico(form) {
     const cliente = document.getElementById('form-cliente').value.trim();
     if (!cliente) {
       Utils.toast('Nome do cliente é obrigatório');
       return;
     }
+
+    const submitBtn = form ? form.querySelector('.btn-salvar') : null;
 
     const dados = {
       cliente,
@@ -367,6 +380,11 @@ const App = (function () {
     };
 
     try {
+      if (submitBtn) { submitBtn.disabled = true; submitBtn.textContent = 'Enviando...'; }
+      if (seletorFotosServico) {
+        dados.fotos = await seletorFotosServico.fotosFinais();
+      }
+
       if (estado.osEmEdicao.id) {
         await Store.atualizar(estado.osEmEdicao.id, dados);
         Utils.toast('Serviço atualizado');
@@ -378,6 +396,7 @@ const App = (function () {
       await recarregar();
     } catch (e) {
       Utils.toast('Erro ao salvar: ' + e.message);
+      if (submitBtn) { submitBtn.disabled = false; submitBtn.textContent = 'Salvar'; }
     }
   }
 

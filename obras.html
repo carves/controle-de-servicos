@@ -75,6 +75,7 @@
       <button class="aba-btn" data-aba="cronograma">📅 Etapas</button>
       <button class="aba-btn" data-aba="atividades">✓ Atividades</button>
       <button class="aba-btn" data-aba="materiais">📦 Materiais</button>
+      <button class="aba-btn" data-aba="revisao">🔍 Revisão</button>
       <button class="aba-btn" data-aba="resumo">📊 Resumo</button>
     </div>
 
@@ -118,22 +119,18 @@
         <div id="materiais-lista" class="materiais-lista"></div>
       </div>
 
+      <!-- ABA: REVISÃO FINAL -->
+      <div id="aba-revisao" class="aba-conteudo">
+        <div class="secao-header">
+          <h3>🔍 Revisão Final</h3>
+        </div>
+        <p class="revisao-explicacao">Observações da arquiteta ou do cliente para correção antes da entrega da obra.</p>
+        <div id="revisao-lista" class="cronograma-lista"></div>
+      </div>
+
       <!-- ABA: RESUMO -->
       <div id="aba-resumo" class="aba-conteudo">
-        <div class="resumo-cards">
-          <div class="card-resumo">
-            <h4>Progresso da Obra</h4>
-            <div id="resumo-progresso" class="progresso-bar"></div>
-          </div>
-          <div class="card-resumo">
-            <h4>Status das Atividades</h4>
-            <div id="resumo-atividades"></div>
-          </div>
-          <div class="card-resumo">
-            <h4>Materiais</h4>
-            <div id="resumo-materiais"></div>
-          </div>
-        </div>
+        <div id="resumo-conteudo"></div>
       </div>
     </div>
   </div>

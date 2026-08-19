@@ -72,6 +72,35 @@ const Store = (function () {
     }
   }
 
+  // ===== UPLOAD DE FOTOS =====
+  async function uploadFoto(arquivo, bucket = 'servicos-fotos') {
+    const extensao = arquivo.name.split('.').pop();
+    const nomeArquivo = `${Date.now()}_${Math.random().toString(36).slice(2)}.${extensao}`;
+    const url = SUPABASE_URL + '/storage/v1/object/' + bucket + '/' + nomeArquivo;
+
+    const resp = await fetch(url, {
+      method: 'POST',
+      headers: {
+        'apikey': SUPABASE_ANON_KEY,
+        'Authorization': 'Bearer ' + SUPABASE_ANON_KEY,
+        'Content-Type': arquivo.type
+      },
+      body: arquivo
+    });
+
+    if (!resp.ok) {
+      const erro = await resp.text();
+      throw new Error('Falha no upload: ' + erro);
+    }
+
+    return SUPABASE_URL + '/storage/v1/object/public/' + bucket + '/' + nomeArquivo;
+  }
+
+  async function uploadFotos(arquivos, bucket = 'servicos-fotos') {
+    const promessas = Array.from(arquivos).map(arquivo => uploadFoto(arquivo, bucket));
+    return Promise.all(promessas);
+  }
+
   // Retorna todas as OS armazenadas
   async function obterTodos() {
     try {
@@ -136,5 +165,5 @@ const Store = (function () {
     return await inserir(dados);
   }
 
-  return { obterTodos, obter, inserir, atualizar, deletar, duplicar };
+  return { uploadFoto, uploadFotos, obterTodos, obter, inserir, atualizar, deletar, duplicar };
 })();

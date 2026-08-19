@@ -233,7 +233,8 @@ const StoreObras = (function () {
       responsavel: dados.responsavel || '',
       data_prevista: dados.data_prevista || null,
       status: dados.status || 'Planejado',
-      prioridade: dados.prioridade || 'Média'
+      prioridade: dados.prioridade || 'Média',
+      fotos: dados.fotos || []
     };
     try {
       const resposta = await chamar(url, {
@@ -293,7 +294,8 @@ const StoreObras = (function () {
       data_entrega_prevista: dados.data_entrega_prevista || null,
       valor: parseFloat(dados.valor) || 0,
       status: dados.status || 'Planejado',
-      observacoes: dados.observacoes || ''
+      observacoes: dados.observacoes || '',
+      fotos: dados.fotos || []
     };
     try {
       const resposta = await chamar(url, {
@@ -387,12 +389,69 @@ const StoreObras = (function () {
     }
   }
 
+  // ===== REVISÃO FINAL (observações da arquiteta para correção) =====
+  async function obterRevisao(obraId) {
+    const url = SUPABASE_URL + '/rest/v1/revisao_obra?obra_id=eq.' + obraId + '&order=id.desc';
+    try {
+      const dados = await chamar(url, { headers: HEADERS });
+      return dados || [];
+    } catch (e) {
+      return [];
+    }
+  }
+
+  async function adicionarRevisao(obraId, dados) {
+    const url = SUPABASE_URL + '/rest/v1/revisao_obra';
+    const corpo = {
+      obra_id: obraId,
+      item: dados.item,
+      observacao: dados.observacao || '',
+      responsavel: dados.responsavel || '',
+      status: dados.status || 'Pendente',
+      fotos: dados.fotos || []
+    };
+    try {
+      const resposta = await chamar(url, {
+        method: 'POST',
+        headers: { ...HEADERS, 'Prefer': 'return=representation' },
+        body: JSON.stringify(corpo)
+      });
+      return resposta[0];
+    } catch (e) {
+      throw e;
+    }
+  }
+
+  async function atualizarRevisao(id, dados) {
+    const url = SUPABASE_URL + '/rest/v1/revisao_obra?id=eq.' + id;
+    try {
+      const resposta = await chamar(url, {
+        method: 'PATCH',
+        headers: { ...HEADERS, 'Prefer': 'return=representation' },
+        body: JSON.stringify(dados)
+      });
+      return resposta[0];
+    } catch (e) {
+      throw e;
+    }
+  }
+
+  async function deletarRevisao(id) {
+    const url = SUPABASE_URL + '/rest/v1/revisao_obra?id=eq.' + id;
+    try {
+      await chamar(url, { method: 'DELETE', headers: HEADERS });
+    } catch (e) {
+      throw e;
+    }
+  }
+
   return {
     uploadFoto, uploadFotos,
     obterObras, obterObra, obterObraPorToken, criarObra, atualizarObra, deletarObra,
     obterDiario, adicionarAnotacao, atualizarAnotacao, deletarAnotacao,
     obterAtividades, adicionarAtividade, atualizarAtividade, deletarAtividade,
     obterMateriais, adicionarMaterial, atualizarMaterial, deletarMaterial,
-    obterCronograma, adicionarEtapa, atualizarEtapa, deletarEtapa
+    obterCronograma, adicionarEtapa, atualizarEtapa, deletarEtapa,
+    obterRevisao, adicionarRevisao, atualizarRevisao, deletarRevisao
   };
 })();

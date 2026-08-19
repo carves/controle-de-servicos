@@ -968,6 +968,32 @@
   font-size: 14px;
 }
 
+.resumo-linha {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 6px 0;
+  border-bottom: 1px solid var(--preto-borda);
+  font-size: 13px;
+}
+
+.resumo-linha:last-child {
+  border-bottom: none;
+}
+
+.resumo-detalhe {
+  font-size: 12px;
+  color: var(--texto-secundario);
+  margin-top: 6px;
+}
+
+.revisao-explicacao {
+  font-size: 13px;
+  color: var(--texto-secundario);
+  margin-bottom: 14px;
+  line-height: 1.5;
+}
+
 /* ===== MODAL ===== */
 #form-modal-obras {
   display: none;
@@ -1148,7 +1174,11 @@
   }
 
   .header-titulo h1 {
-    font-size: 22px;
+    font-size: 18px;
+  }
+
+  .header-titulo p {
+    font-size: 12px;
   }
 
   .abas-obra {
@@ -1159,6 +1189,45 @@
   .aba-btn {
     padding: 6px 12px;
     font-size: 11px;
+  }
+
+  /* Títulos menores no mobile: mais espaço para o conteúdo em si */
+  .painel-titulo h2 {
+    font-size: 16px;
+  }
+
+  .painel-endereco-obra,
+  #painel-endereco-obra {
+    font-size: 12px;
+  }
+
+  .secao-header h3 {
+    font-size: 14px;
+  }
+
+  .card-info h3 {
+    font-size: 14px;
+  }
+
+  .diario-header strong {
+    font-size: 13px;
+  }
+
+  .diario-autor {
+    font-size: 11px;
+  }
+
+  .atividade-header h4,
+  .material-header h4 {
+    font-size: 13px;
+  }
+
+  .form-header h2 {
+    font-size: 15px;
+  }
+
+  .card-resumo h4 {
+    font-size: 13px;
   }
 
   .diario-header,
