@@ -1,0 +1,13 @@
+[
+  {
+    "id": 1,
+    "obra_id": 9,
+    "titulo": "Reparo e pintura",
+    "descricao": "Kit\nAc3\nTela para trinca\nTinta \nCorante preto\nEscada laranja material isolamento",
+    "responsavel": "Maycon",
+    "data_prevista": "2026-08-21",
+    "status": "Planejado",
+    "prioridade": "Baixa",
+    "fotos": []
+  }
+]
