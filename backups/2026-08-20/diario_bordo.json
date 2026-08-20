@@ -1,0 +1,98 @@
+[
+  {
+    "id": 2,
+    "obra_id": 2,
+    "data": "2026-08-14",
+    "autor": "Guilherme",
+    "descricao": "Inicio da retirada de formas de vigas",
+    "clima": "chuva parcial",
+    "pessoal_presente": "Guilherme e Jaime",
+    "criada": "2026-08-17T23:42:06.708+00:00",
+    "fotos": []
+  },
+  {
+    "id": 3,
+    "obra_id": 2,
+    "data": "2026-08-17",
+    "autor": "Guilherme",
+    "descricao": "Término da remoção das caixas de vigas e remoção de grande parte de pregos e pedaços de vergalhão que tinha nas vigas e pilares",
+    "clima": "nublado",
+    "pessoal_presente": "Guilherme e Jaime",
+    "criada": "2026-08-17T23:43:35.044+00:00",
+    "fotos": []
+  },
+  {
+    "id": 5,
+    "obra_id": 5,
+    "data": "2026-08-17",
+    "autor": "Zé",
+    "descricao": "finalização de massa na área da cozinha",
+    "clima": "nublado",
+    "pessoal_presente": "Denis, Zé",
+    "criada": "2026-08-17T23:54:35.419+00:00",
+    "fotos": []
+  },
+  {
+    "id": 6,
+    "obra_id": 5,
+    "data": "2026-08-17",
+    "autor": "Zé",
+    "descricao": "duas demãos de tinta paredes da cozinha",
+    "clima": "nublado",
+    "pessoal_presente": "Denis, Zé",
+    "criada": "2026-08-17T23:55:08.164+00:00",
+    "fotos": [
+      "https://adrxvlkzcfevrrqxpqkc.supabase.co/storage/v1/object/public/diario-fotos/1787053794091_zdgyd5bac8.jpg"
+    ]
+  },
+  {
+    "id": 7,
+    "obra_id": 5,
+    "data": "2026-08-17",
+    "autor": "Zé",
+    "descricao": "Primeira mão de massa nas sancas da sala",
+    "clima": "nublado",
+    "pessoal_presente": "Denis, Zé",
+    "criada": "2026-08-17T23:55:31.709+00:00",
+    "fotos": [
+      "https://adrxvlkzcfevrrqxpqkc.supabase.co/storage/v1/object/public/diario-fotos/1787053816822_z9buokei6k.jpg"
+    ]
+  },
+  {
+    "id": 8,
+    "obra_id": 5,
+    "data": "2026-08-18",
+    "autor": "Denis",
+    "descricao": "Arremate negativo gesso área de serviço",
+    "clima": "Ensolarado",
+    "pessoal_presente": "",
+    "criada": "2026-08-18T13:46:50.3+00:00",
+    "fotos": [
+      "https://adrxvlkzcfevrrqxpqkc.supabase.co/storage/v1/object/public/diario-fotos/1787060809259_k8wjvea82vg.jpg"
+    ]
+  },
+  {
+    "id": 9,
+    "obra_id": 5,
+    "data": "2026-08-18",
+    "autor": "Miguel",
+    "descricao": "Primeira demão tinta cozinha e área de serviço",
+    "clima": "Ensolarado",
+    "pessoal_presente": "",
+    "criada": "2026-08-18T13:52:58.433+00:00",
+    "fotos": [
+      "https://adrxvlkzcfevrrqxpqkc.supabase.co/storage/v1/object/public/diario-fotos/1787061176551_1ub81iun7u2i.jpg"
+    ]
+  },
+  {
+    "id": 10,
+    "obra_id": 8,
+    "data": "2026-08-18",
+    "autor": "Denis",
+    "descricao": "Interfone, acionar Condomínio - técnico foi e identificou que a emenda estourou. na troca do fio o eletroduto estava amassado no pisso. precisa abrir para arrumar",
+    "clima": "Nublado",
+    "pessoal_presente": "Denis Maycon",
+    "criada": "2026-08-18T18:08:14.662+00:00",
+    "fotos": []
+  }
+]
