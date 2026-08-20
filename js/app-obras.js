@@ -900,19 +900,27 @@ const AppObras = (function () {
       return;
     }
 
+    const opcoesStatus = ['Planejado', 'Em Andamento', 'Concluído'];
+
     const html = atividades.map(at => `
       <div class="atividade-item" data-id="${at.id}">
         <div class="atividade-header">
           <h4>${Utils.escapeHtml(at.titulo)}</h4>
           <div class="atividade-tags">
-            <span class="status-badge cor-${getCorStatus(at.status)}">${at.status}</span>
+            <select class="quick-edit-status cor-${getCorStatus(at.status)}" data-id="${at.id}">
+              ${opcoesStatus.map(s => `<option value="${s}" ${at.status === s ? 'selected' : ''}>${s}</option>`).join('')}
+            </select>
             <span class="badge cor-${at.prioridade === 'Alta' ? 'red' : at.prioridade === 'Média' ? 'orange' : 'blue'}">${at.prioridade}</span>
           </div>
         </div>
         <div class="atividade-body">
           <p>${Utils.escapeHtml(at.descricao || '')}</p>
-          <p><strong>Responsável:</strong> ${Utils.escapeHtml(at.responsavel || '—')}</p>
-          <p><strong>Previsão:</strong> ${Utils.dateBR(at.data_prevista) || '—'}</p>
+          <p><strong>Responsável:</strong>
+            <span class="quick-edit-texto" data-campo="responsavel" data-id="${at.id}" contenteditable="true">${Utils.escapeHtml(at.responsavel || '')}</span>
+          </p>
+          <p><strong>Previsão:</strong>
+            <input type="date" class="quick-edit-data" data-campo="data_prevista" data-id="${at.id}" value="${at.data_prevista || ''}">
+          </p>
           ${at.data_conclusao ? `<p><strong>Concluída em:</strong> ${Utils.dateBR(at.data_conclusao)}</p>` : ''}
           ${Utils.htmlGaleriaFotos(at.fotos)}
         </div>
@@ -932,6 +940,48 @@ const AppObras = (function () {
         const id = parseInt(e.target.dataset.id);
         if (acao === 'editar-atividade') abrirFormularioAtividade(id);
         else if (acao === 'deletar-atividade') deletarAtividadeConfirma(id);
+      });
+    });
+
+    // Edição rápida direto no card — sem abrir modal. Pensado para o uso mais
+    // comum: colar várias tarefas de uma vez e depois ajustar responsável,
+    // data e status item a item, olhando a lista.
+    container.querySelectorAll('.quick-edit-status').forEach(sel => {
+      sel.addEventListener('change', async () => {
+        const id = parseInt(sel.dataset.id);
+        try {
+          await StoreObras.atualizarAtividade(id, { status: sel.value });
+          Utils.toast('Status atualizado');
+          await carregarAtividades();
+        } catch (e) {
+          Utils.toast('Erro ao atualizar status');
+        }
+      });
+    });
+
+    container.querySelectorAll('.quick-edit-texto').forEach(el => {
+      el.addEventListener('blur', async () => {
+        const id = parseInt(el.dataset.id);
+        const campo = el.dataset.campo;
+        try {
+          await StoreObras.atualizarAtividade(id, { [campo]: el.textContent.trim() });
+        } catch (e) {
+          Utils.toast('Erro ao salvar');
+        }
+      });
+      el.addEventListener('keydown', (e) => { if (e.key === 'Enter') { e.preventDefault(); el.blur(); } });
+    });
+
+    container.querySelectorAll('.quick-edit-data').forEach(el => {
+      el.addEventListener('change', async () => {
+        const id = parseInt(el.dataset.id);
+        const campo = el.dataset.campo;
+        try {
+          await StoreObras.atualizarAtividade(id, { [campo]: el.value || null });
+          Utils.toast('Data atualizada');
+        } catch (e) {
+          Utils.toast('Erro ao salvar data');
+        }
       });
     });
   }

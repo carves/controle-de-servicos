@@ -94,9 +94,21 @@ const GridImport = (function () {
     return { bruto, valor: bruto, ok: true };
   }
 
+  // Remove marcador de lista no início da linha (colado do WhatsApp/anotações):
+  // "- item", "• item", "* item", "1. item", "1) item", "[ ] item", "[x] item".
+  function limparMarcadorLista(linha) {
+    return linha
+      .replace(/^\s*\[[ xX]?\]\s*/, '')
+      .replace(/^\s*[-*•●▪]\s+/, '')
+      .replace(/^\s*\d+[\.\)]\s+/, '')
+      .trim();
+  }
+
   // Texto colado inteiro -> matriz de células já convertidas por coluna
   function parseTexto(texto, colunas) {
-    const linhasTexto = texto.replace(/\r\n/g, '\n').split('\n').filter(l => l.trim() !== '');
+    const linhasTexto = texto.replace(/\r\n/g, '\n').split('\n')
+      .map(limparMarcadorLista)
+      .filter(l => l !== '');
     if (linhasTexto.length === 0) return [];
     const separador = detectarSeparador(linhasTexto);
     return linhasTexto.map(linhaTxt => {
@@ -155,6 +167,7 @@ const GridImport = (function () {
           <button type="button" class="gi-x" data-gi-fechar>✕</button>
         </div>
         <p class="gi-dica">Cole um bloco copiado do Excel, PDF ou WhatsApp em qualquer célula, ou preencha manualmente. <kbd>Tab</kbd> anda para o lado, <kbd>Enter</kbd> desce de linha.</p>
+        <p class="gi-dica-mobile">No celular: cole o texto no primeiro campo da lista abaixo — ele se espalha nos campos seguintes sozinho.</p>
         <div class="gi-tabela-wrap">
           <table class="gi-tabela">
             <thead><tr>
@@ -189,7 +202,7 @@ const GridImport = (function () {
             const vazia = celula.bruto === '' && col.obrigatorio;
             const classe = invalida || vazia ? 'gi-cel gi-cel-erro' : 'gi-cel';
             const listId = sugestoes[col.chave] ? `gi-list-${col.chave}` : '';
-            return `<td class="${classe}" contenteditable="true" data-li="${li}" data-campo="${col.chave}" data-tipo="${col.tipo}" ${listId ? `list="${listId}"` : ''}>${Utils.escapeHtml(celula.bruto)}</td>`;
+            return `<td class="${classe}" contenteditable="true" data-li="${li}" data-campo="${col.chave}" data-tipo="${col.tipo}" data-label="${Utils.escapeHtml(col.label)}" ${listId ? `list="${listId}"` : ''}>${Utils.escapeHtml(celula.bruto)}</td>`;
           }).join('')}
           <td class="gi-col-acao">
             ${linha.__possivelDuplicata ? '<span class="gi-tag-dup" title="Parece com um item já existente — pode ser repetição ou algo pendente">⚠</span>' : ''}
@@ -393,6 +406,65 @@ const GridImport = (function () {
       .gi-btn-confirmar:disabled { opacity: 0.4; cursor: not-allowed; }
       .gi-tabela-conf .gi-conf-label { color: var(--texto-fraco, #505868); font-size: 11px; text-transform: uppercase; }
       .gi-tabela-conf tr.gi-conf-diverge td { background: rgba(239,68,68,0.12); }
+      .gi-dica-mobile { display: none; margin: 0 22px 12px; font-size: 12.5px; color: var(--esmeralda-claro, #34d399); }
+
+      /* ===== MOBILE — prioridade real de uso: cards empilhados em vez de tabela larga ===== */
+      @media (max-width: 640px) {
+        .gi-overlay { padding: 0; align-items: flex-end; }
+        .gi-modal { width: 100%; max-height: 94vh; border-radius: 16px 16px 0 0; }
+        .gi-dica { display: none; }
+        .gi-dica-mobile { display: block; }
+
+        .gi-tabela-wrap { margin: 0 14px; border: none; overflow: visible; }
+        .gi-tabela, .gi-tabela tbody, .gi-tabela tr, .gi-tabela td {
+          display: block; width: 100%;
+        }
+        .gi-tabela thead { display: none; }
+        .gi-tabela tbody tr {
+          border: 1px solid var(--preto-borda, #252a35);
+          border-radius: 10px;
+          margin-bottom: 12px;
+          padding: 6px 12px;
+          position: relative;
+        }
+        .gi-tabela tbody tr td {
+          border-top: none;
+          padding: 10px 0;
+          border-bottom: 1px solid var(--preto-borda, #252a35);
+          min-height: 24px;
+        }
+        .gi-tabela tbody tr td:last-of-type { border-bottom: none; }
+        .gi-cel[data-label]::before {
+          content: attr(data-label);
+          display: block;
+          font-size: 10px;
+          text-transform: uppercase;
+          letter-spacing: 0.04em;
+          color: var(--texto-secundario, #8a95a8);
+          font-weight: 600;
+          margin-bottom: 3px;
+        }
+        .gi-col-acao {
+          position: absolute; top: 6px; right: 8px;
+          width: auto; padding: 0 !important; border: none !important;
+        }
+        .gi-del { font-size: 16px; padding: 6px; }
+
+        .gi-rodape { flex-wrap: wrap; padding: 14px; }
+        .gi-btn-add { width: 100%; padding: 12px; text-align: center; order: 1; }
+        .gi-contador { order: 2; width: 100%; text-align: center; margin: 4px 0; }
+        .gi-acoes { order: 3; width: 100%; margin-left: 0; }
+        .gi-btn { flex: 1; padding: 12px; font-size: 14px; }
+
+        /* tabela de conferência: mantém rolagem horizontal (é leitura, não edição) */
+        .gi-tabela-conf, .gi-tabela-conf tbody, .gi-tabela-conf tr, .gi-tabela-conf td {
+          display: table-row-group; width: auto;
+        }
+        .gi-tabela-conf { display: table; }
+        .gi-tabela-conf tr { display: table-row; }
+        .gi-tabela-conf td { display: table-cell; border-bottom: 1px solid var(--preto-borda, #252a35); }
+        .gi-tabela-wrap:has(.gi-tabela-conf) { overflow-x: auto; }
+      }
     `;
     document.head.appendChild(style);
   }
