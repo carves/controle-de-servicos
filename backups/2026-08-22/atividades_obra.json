@@ -1,0 +1,134 @@
+[
+  {
+    "id": 1,
+    "obra_id": 9,
+    "titulo": "Reparo e pintura - sex a tarde",
+    "descricao": "Kit\nAc3\nTela para trinca\nTinta \nCorante preto\nEscada laranja material isolamento",
+    "responsavel": "Maycon",
+    "data_prevista": "2026-08-21",
+    "status": "Planejado",
+    "prioridade": "Baixa",
+    "fotos": []
+  },
+  {
+    "id": 2,
+    "obra_id": 5,
+    "titulo": "📘Acabamento atrás da porta de correr.",
+    "descricao": null,
+    "responsavel": "",
+    "data_prevista": null,
+    "status": "Planejado",
+    "prioridade": "Média",
+    "fotos": []
+  },
+  {
+    "id": 3,
+    "obra_id": 5,
+    "titulo": "📘Banheiro Subir luminárias.",
+    "descricao": null,
+    "responsavel": "",
+    "data_prevista": null,
+    "status": "Planejado",
+    "prioridade": "Média",
+    "fotos": []
+  },
+  {
+    "id": 4,
+    "obra_id": 5,
+    "titulo": "📘Reforço do corte Barra de Led",
+    "descricao": null,
+    "responsavel": "",
+    "data_prevista": null,
+    "status": "Planejado",
+    "prioridade": "Média",
+    "fotos": []
+  },
+  {
+    "id": 5,
+    "obra_id": 5,
+    "titulo": "📘 Tampas das tomadas.",
+    "descricao": null,
+    "responsavel": "",
+    "data_prevista": null,
+    "status": "Planejado",
+    "prioridade": "Média",
+    "fotos": []
+  },
+  {
+    "id": 6,
+    "obra_id": 5,
+    "titulo": "🛑Verificar sobre a compra dos sanitários.",
+    "descricao": null,
+    "responsavel": "",
+    "data_prevista": null,
+    "status": "Planejado",
+    "prioridade": "Média",
+    "fotos": []
+  },
+  {
+    "id": 7,
+    "obra_id": 5,
+    "titulo": "📘Suíte 1: Reparo acima da porta. (Passar Massa)",
+    "descricao": null,
+    "responsavel": "",
+    "data_prevista": null,
+    "status": "Planejado",
+    "prioridade": "Média",
+    "fotos": []
+  },
+  {
+    "id": 8,
+    "obra_id": 5,
+    "titulo": "📘Finalizar parede atrás da Porta.",
+    "descricao": null,
+    "responsavel": "",
+    "data_prevista": null,
+    "status": "Planejado",
+    "prioridade": "Média",
+    "fotos": []
+  },
+  {
+    "id": 11,
+    "obra_id": 5,
+    "titulo": "📘Quarto da empregada: Subir Luminária.",
+    "descricao": null,
+    "responsavel": "",
+    "data_prevista": null,
+    "status": "Planejado",
+    "prioridade": "Média",
+    "fotos": []
+  },
+  {
+    "id": 12,
+    "obra_id": 5,
+    "titulo": "📘Fazer Acabamento na Janela.",
+    "descricao": null,
+    "responsavel": "",
+    "data_prevista": null,
+    "status": "Planejado",
+    "prioridade": "Média",
+    "fotos": []
+  },
+  {
+    "id": 10,
+    "obra_id": 5,
+    "titulo": "corredor área intima - Reparo no Spot do meio.",
+    "descricao": "",
+    "responsavel": "",
+    "data_prevista": null,
+    "status": "Planejado",
+    "prioridade": "Média",
+    "fotos": []
+  },
+  {
+    "id": 13,
+    "obra_id": 5,
+    "titulo": "🛑Comprar mais cantoneiras para acamento sanca da sala de Tv",
+    "descricao": "",
+    "responsavel": "Jaime",
+    "data_prevista": "2026-08-20",
+    "status": "Em Andamento",
+    "prioridade": "Média",
+    "fotos": []
+  }
+]
