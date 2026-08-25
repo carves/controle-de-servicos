@@ -1240,10 +1240,15 @@
     flex-shrink: 0;
   }
 
+  /* Só o ícone no mobile: o texto "Portal do Cliente" tomava espaço
+     demais e espremia o título da obra até quase sumir */
   #btn-portal-cliente {
     padding: 5px 8px;
-    font-size: 10px;
-    white-space: nowrap;
+    font-size: 13px;
+  }
+
+  .btn-portal-texto {
+    display: none;
   }
 
   .painel-status .status-badge {
