@@ -83,4 +83,7 @@ body {
 
 @media (max-width: 480px) {
   .portal-capa { height: 160px; }
+  .portal-header h1 { font-size: 17px; }
+  .portal-header p { font-size: 12px; }
+  .portal-secao h2 { font-size: 14px; }
 }

@@ -151,11 +151,15 @@ const Utils = (function () {
   }
 
   // Cria um seletor de fotos reutilizável (preview + upload + remoção) dentro
-  // de um formulário. Chame fotosFinais() no submit para obter a lista de URLs
-  // final (fotos antigas mantidas + novas já comprimidas e enviadas).
+  // de um formulário. Permite escolher fotos em vários lotes (abre o seletor
+  // de arquivos quantas vezes quiser, sempre somando ao que já foi escolhido
+  // — nada se perde e não precisa salvar entre uma seleção e outra).
+  // Chame fotosFinais() no submit para obter a lista de URLs final (fotos
+  // antigas mantidas + novas já comprimidas e enviadas).
   // `storeModule` precisa ter uploadFotos(arquivos, bucket).
   function criarSeletorFotos(fotosIniciais, idInput, idPreview, storeModule, bucket = 'diario-fotos') {
     let fotosExistentes = [...(fotosIniciais || [])];
+    let arquivosNovos = []; // acumula File objects de todas as seleções feitas
     const input = document.getElementById(idInput);
     const preview = document.getElementById(idPreview);
 
@@ -163,14 +167,15 @@ const Utils = (function () {
       const existentesHtml = fotosExistentes.map((url, i) => `
         <div class="preview-foto-item">
           <img src="${escapeHtml(url)}" alt="Foto">
-          <button type="button" class="remover-foto" data-idx="${i}">✕</button>
+          <button type="button" class="remover-foto" data-tipo="existente" data-idx="${i}">✕</button>
         </div>
       `).join('');
 
-      const novasHtml = Array.from(input.files || []).map(arquivo => `
+      const novasHtml = arquivosNovos.map((arquivo, i) => `
         <div class="preview-foto-item preview-foto-nova">
           <img src="${URL.createObjectURL(arquivo)}" alt="Nova foto">
           <span class="preview-foto-badge">novo</span>
+          <button type="button" class="remover-foto" data-tipo="novo" data-idx="${i}">✕</button>
         </div>
       `).join('');
 
@@ -178,21 +183,29 @@ const Utils = (function () {
 
       preview.querySelectorAll('.remover-foto').forEach(btn => {
         btn.addEventListener('click', () => {
-          fotosExistentes.splice(parseInt(btn.dataset.idx), 1);
+          const idx = parseInt(btn.dataset.idx);
+          if (btn.dataset.tipo === 'existente') fotosExistentes.splice(idx, 1);
+          else arquivosNovos.splice(idx, 1);
           render();
         });
       });
     }
 
     render();
-    input.addEventListener('change', render);
+
+    // Cada seleção SOMA ao que já estava escolhido, em vez de substituir —
+    // assim dá pra abrir o seletor várias vezes (câmera, depois galeria, etc.)
+    input.addEventListener('change', () => {
+      arquivosNovos = arquivosNovos.concat(Array.from(input.files || []));
+      input.value = ''; // limpa para permitir escolher os mesmos arquivos de novo se precisar
+      render();
+    });
 
     return {
       async fotosFinais() {
-        const arquivos = input.files;
         let urlsNovas = [];
-        if (arquivos.length > 0) {
-          const comprimidos = await Promise.all(Array.from(arquivos).map(a => comprimirImagem(a)));
+        if (arquivosNovos.length > 0) {
+          const comprimidos = await Promise.all(arquivosNovos.map(a => comprimirImagem(a)));
           urlsNovas = await storeModule.uploadFotos(comprimidos, bucket);
         }
         return [...fotosExistentes, ...urlsNovas];

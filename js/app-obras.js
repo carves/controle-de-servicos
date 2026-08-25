@@ -309,9 +309,6 @@ const AppObras = (function () {
       if (reg) dados = reg;
     }
 
-    // Fotos já salvas (ao editar) ficam nesta lista; novas entram em novasFotos
-    let fotosExistentes = [...(dados.fotos || [])];
-
     const html = `
       <div class="form-container">
         <div class="form-header">
@@ -326,7 +323,7 @@ const AppObras = (function () {
           <input type="text" id="form-diario-pessoal" placeholder="Pessoal presente" value="${Utils.escapeHtml(dados.pessoal_presente || '')}">
 
           <label class="campo-fotos-label">📷 Fotos</label>
-          <input type="file" id="form-diario-fotos" accept="image/*" capture="environment" multiple>
+          <input type="file" id="form-diario-fotos" accept="image/*" multiple>
           <div id="preview-fotos" class="preview-fotos"></div>
 
           <div class="form-botoes">
@@ -341,55 +338,15 @@ const AppObras = (function () {
     modal.innerHTML = html;
     modal.style.display = 'flex';
 
-    const previewContainer = document.getElementById('preview-fotos');
-    const inputFotos = document.getElementById('form-diario-fotos');
-
-    function renderizarPreview() {
-      const existentesHtml = fotosExistentes.map((url, i) => `
-        <div class="preview-foto-item">
-          <img src="${Utils.escapeHtml(url)}" alt="Foto">
-          <button type="button" class="remover-foto" data-tipo="existente" data-idx="${i}">✕</button>
-        </div>
-      `).join('');
-
-      const novasHtml = Array.from(inputFotos.files || []).map((arquivo, i) => `
-        <div class="preview-foto-item preview-foto-nova">
-          <img src="${URL.createObjectURL(arquivo)}" alt="Nova foto">
-          <span class="preview-foto-badge">novo</span>
-        </div>
-      `).join('');
-
-      previewContainer.innerHTML = existentesHtml + novasHtml;
-
-      previewContainer.querySelectorAll('.remover-foto').forEach(btn => {
-        btn.addEventListener('click', () => {
-          const idx = parseInt(btn.dataset.idx);
-          fotosExistentes.splice(idx, 1);
-          renderizarPreview();
-        });
-      });
-    }
-    renderizarPreview();
-
-    inputFotos.addEventListener('change', renderizarPreview);
+    const seletorFotos = criarSeletorFotos(dados.fotos, 'form-diario-fotos', 'preview-fotos');
 
     document.getElementById('form-diario').addEventListener('submit', async (e) => {
       e.preventDefault();
-
       const submitBtn = e.target.querySelector('.btn-salvar');
-      const arquivosNovos = inputFotos.files;
 
       try {
-        let urlsNovas = [];
-        if (arquivosNovos.length > 0) {
-          submitBtn.disabled = true;
-          submitBtn.textContent = `Otimizando ${arquivosNovos.length} foto(s)...`;
-          const arquivosComprimidos = await Promise.all(
-            Array.from(arquivosNovos).map(a => Utils.comprimirImagem(a))
-          );
-          submitBtn.textContent = `Enviando ${arquivosNovos.length} foto(s)...`;
-          urlsNovas = await StoreObras.uploadFotos(arquivosComprimidos);
-        }
+        submitBtn.disabled = true;
+        submitBtn.textContent = 'Enviando...';
 
         const formDados = {
           data: document.getElementById('form-diario-data').value,
@@ -397,7 +354,7 @@ const AppObras = (function () {
           descricao: document.getElementById('form-diario-desc').value,
           clima: document.getElementById('form-diario-clima').value,
           pessoal_presente: document.getElementById('form-diario-pessoal').value,
-          fotos: [...fotosExistentes, ...urlsNovas]
+          fotos: await seletorFotos.fotosFinais()
         };
 
         if (id) {
@@ -799,7 +756,7 @@ const AppObras = (function () {
 
           <label class="campo-fotos-label">📷 Fotos</label>
           <div id="preview-fotos-revisao" class="preview-fotos"></div>
-          <input type="file" id="form-revisao-fotos" accept="image/*" capture="environment" multiple>
+          <input type="file" id="form-revisao-fotos" accept="image/*" multiple>
 
           <div class="form-botoes">
             <button type="submit" class="btn btn-salvar">Salvar</button>
@@ -1029,7 +986,7 @@ const AppObras = (function () {
 
           <label class="campo-fotos-label">📷 Fotos</label>
           <div id="preview-fotos-atividade" class="preview-fotos"></div>
-          <input type="file" id="form-atividade-fotos" accept="image/*" capture="environment" multiple>
+          <input type="file" id="form-atividade-fotos" accept="image/*" multiple>
 
           <div class="form-botoes">
             <button type="submit" class="btn btn-salvar">Salvar</button>
@@ -1187,7 +1144,7 @@ const AppObras = (function () {
 
           <label class="campo-fotos-label">📷 Fotos</label>
           <div id="preview-fotos-material" class="preview-fotos"></div>
-          <input type="file" id="form-material-fotos" accept="image/*" capture="environment" multiple>
+          <input type="file" id="form-material-fotos" accept="image/*" multiple>
 
           <div class="form-botoes">
             <button type="submit" class="btn btn-salvar">Salvar</button>

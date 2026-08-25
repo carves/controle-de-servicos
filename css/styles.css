@@ -872,10 +872,10 @@ legend {
   }
 
   fieldset { padding: 12px; }
-  legend { font-size: 14px; margin-bottom: 12px; }
+  legend { font-size: 13px; margin-bottom: 12px; }
 
-  .form-header h2 { font-size: 15px; }
-  .sidebar h1 { font-size: 16px; }
+  .form-header h2 { font-size: 14px; }
+  .sidebar h1 { font-size: 15px; }
 }
 
 /* ========== FOTOS (galeria, preview e upload) ========== */

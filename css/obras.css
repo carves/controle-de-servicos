@@ -1198,9 +1198,57 @@
   .quick-edit-texto { min-height: 32px; padding: 6px 8px; }
   .quick-edit-data { min-height: 36px; padding: 8px; font-size: 14px; }
 
+  /* Cabeçalho da obra bem mais compacto no mobile: tudo encolhido,
+     título/endereço truncados numa linha só (sem quebrar em várias) */
   .painel-header {
-    flex-direction: column;
-    align-items: flex-start;
+    display: grid;
+    grid-template-columns: auto 1fr auto;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 10px;
+  }
+
+  .painel-titulo {
+    min-width: 0; /* permite o ellipsis funcionar dentro do grid */
+  }
+
+  .painel-titulo h2 {
+    font-size: 13px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .painel-titulo p {
+    font-size: 10px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    margin-top: 0;
+  }
+
+  .painel-status {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    flex-shrink: 0;
+  }
+
+  .btn-voltar {
+    padding: 5px 8px;
+    font-size: 12px;
+    flex-shrink: 0;
+  }
+
+  #btn-portal-cliente {
+    padding: 5px 8px;
+    font-size: 10px;
+    white-space: nowrap;
+  }
+
+  .painel-status .status-badge {
+    font-size: 10px;
+    padding: 3px 7px;
   }
 
   .abas-obra {
@@ -1225,11 +1273,15 @@
   }
 
   .header-titulo h1 {
-    font-size: 18px;
+    font-size: 16px;
   }
 
   .header-titulo p {
-    font-size: 12px;
+    font-size: 11px;
+  }
+
+  .header-obras {
+    padding: 10px 14px;
   }
 
   .abas-obra {
@@ -1243,42 +1295,33 @@
   }
 
   /* Títulos menores no mobile: mais espaço para o conteúdo em si */
-  .painel-titulo h2 {
-    font-size: 16px;
-  }
-
-  .painel-endereco-obra,
-  #painel-endereco-obra {
-    font-size: 12px;
-  }
-
   .secao-header h3 {
-    font-size: 14px;
-  }
-
-  .card-info h3 {
-    font-size: 14px;
-  }
-
-  .diario-header strong {
     font-size: 13px;
   }
 
+  .card-info h3 {
+    font-size: 13px;
+  }
+
+  .diario-header strong {
+    font-size: 12px;
+  }
+
   .diario-autor {
-    font-size: 11px;
+    font-size: 10px;
   }
 
   .atividade-header h4,
   .material-header h4 {
-    font-size: 13px;
+    font-size: 12px;
   }
 
   .form-header h2 {
-    font-size: 15px;
+    font-size: 14px;
   }
 
   .card-resumo h4 {
-    font-size: 13px;
+    font-size: 12px;
   }
 
   .diario-header,
