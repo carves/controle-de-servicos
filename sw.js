@@ -4,12 +4,14 @@
    só cuida dos arquivos estáticos do próprio site.
    ========================================================================= */
 
-const CACHE_NAME = 'controle-servicos-v1';
+const CACHE_NAME = 'controle-servicos-v2';
 const ARQUIVOS_ESSENCIAIS = [
   'index.html',
   'obras.html',
+  'portal.html',
   'css/styles.css',
   'css/obras.css',
+  'css/portal.css',
   'js/pin-gate.js',
   'js/config.js',
   'js/utils.js',
@@ -17,6 +19,8 @@ const ARQUIVOS_ESSENCIAIS = [
   'js/store-obras.js',
   'js/app.js',
   'js/app-obras.js',
+  'js/app-portal.js',
+  'js/pwa-register.js',
   'js/supabase-config.js',
   'manifest.json',
   'icon.svg'
