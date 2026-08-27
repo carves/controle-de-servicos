@@ -958,6 +958,7 @@ legend {
   object-fit: cover;
   border-radius: var(--raio-sm);
   border: 1px solid var(--preto-borda2);
+  cursor: pointer;
 }
 
 .preview-foto-nova img {

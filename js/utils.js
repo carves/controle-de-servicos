@@ -166,18 +166,21 @@ const Utils = (function () {
     function render() {
       const existentesHtml = fotosExistentes.map((url, i) => `
         <div class="preview-foto-item">
-          <img src="${escapeHtml(url)}" alt="Foto">
+          <img src="${escapeHtml(url)}" alt="Foto" class="preview-foto-clicavel" data-url="${escapeHtml(url)}">
           <button type="button" class="remover-foto" data-tipo="existente" data-idx="${i}">✕</button>
         </div>
       `).join('');
 
-      const novasHtml = arquivosNovos.map((arquivo, i) => `
+      const novasHtml = arquivosNovos.map((arquivo, i) => {
+        const urlLocal = URL.createObjectURL(arquivo);
+        return `
         <div class="preview-foto-item preview-foto-nova">
-          <img src="${URL.createObjectURL(arquivo)}" alt="Nova foto">
+          <img src="${urlLocal}" alt="Nova foto" class="preview-foto-clicavel" data-url="${urlLocal}">
           <span class="preview-foto-badge">novo</span>
           <button type="button" class="remover-foto" data-tipo="novo" data-idx="${i}">✕</button>
         </div>
-      `).join('');
+      `;
+      }).join('');
 
       preview.innerHTML = existentesHtml + novasHtml;
 
@@ -188,6 +191,11 @@ const Utils = (function () {
           else arquivosNovos.splice(idx, 1);
           render();
         });
+      });
+
+      // Clicar na miniatura abre a foto em tamanho grande
+      preview.querySelectorAll('.preview-foto-clicavel').forEach(img => {
+        img.addEventListener('click', () => abrirLightbox(img.dataset.url));
       });
     }
 

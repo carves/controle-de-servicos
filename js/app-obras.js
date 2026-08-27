@@ -1365,16 +1365,17 @@ const AppObras = (function () {
 
     function renderizarPreviewCapa() {
       if (inputFotoArquivo.files[0]) {
+        const urlLocal = URL.createObjectURL(inputFotoArquivo.files[0]);
         previewCapa.innerHTML = `
           <div class="preview-foto-item preview-foto-nova">
-            <img src="${URL.createObjectURL(inputFotoArquivo.files[0])}" alt="Nova foto de capa">
+            <img src="${urlLocal}" alt="Nova foto de capa" class="preview-foto-clicavel" data-url="${urlLocal}">
             <span class="preview-foto-badge">novo</span>
           </div>
         `;
       } else if (fotoAtual) {
         previewCapa.innerHTML = `
           <div class="preview-foto-item">
-            <img src="${Utils.escapeHtml(fotoAtual)}" alt="Foto de capa atual">
+            <img src="${Utils.escapeHtml(fotoAtual)}" alt="Foto de capa atual" class="preview-foto-clicavel" data-url="${Utils.escapeHtml(fotoAtual)}">
             <button type="button" class="remover-foto" id="btn-remover-foto-capa">✕</button>
           </div>
         `;
@@ -1386,6 +1387,10 @@ const AppObras = (function () {
       } else {
         previewCapa.innerHTML = '<p class="sem-foto-texto">Nenhuma foto selecionada</p>';
       }
+
+      previewCapa.querySelectorAll('.preview-foto-clicavel').forEach(img => {
+        img.addEventListener('click', () => Utils.abrirLightbox(img.dataset.url));
+      });
     }
     renderizarPreviewCapa();
     inputFotoArquivo.addEventListener('change', renderizarPreviewCapa);
