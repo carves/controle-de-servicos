@@ -4,7 +4,7 @@
    só cuida dos arquivos estáticos do próprio site.
    ========================================================================= */
 
-const CACHE_NAME = 'controle-servicos-v2';
+const CACHE_NAME = 'controle-servicos-v3';
 const ARQUIVOS_ESSENCIAIS = [
   'index.html',
   'obras.html',
@@ -49,21 +49,18 @@ self.addEventListener('fetch', (event) => {
   if (url.origin !== self.location.origin) return;
   if (event.request.method !== 'GET') return;
 
-  // Estratégia stale-while-revalidate: responde rápido com o cache
-  // e atualiza o cache em segundo plano para a próxima visita
+  // Estratégia network-first: sempre tenta buscar a versão mais nova da
+  // rede primeiro (garante que quem abrir o app vê a versão publicada mais
+  // recente). Só usa o cache como reserva se estiver sem internet.
   event.respondWith(
-    caches.match(event.request).then((cacheado) => {
-      const buscaRede = fetch(event.request)
-        .then((resposta) => {
-          if (resposta.ok) {
-            const clone = resposta.clone();
-            caches.open(CACHE_NAME).then((cache) => cache.put(event.request, clone));
-          }
-          return resposta;
-        })
-        .catch(() => cacheado);
-
-      return cacheado || buscaRede;
-    })
+    fetch(event.request)
+      .then((resposta) => {
+        if (resposta.ok) {
+          const clone = resposta.clone();
+          caches.open(CACHE_NAME).then((cache) => cache.put(event.request, clone));
+        }
+        return resposta;
+      })
+      .catch(() => caches.match(event.request))
   );
 });
