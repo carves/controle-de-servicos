@@ -1,0 +1,215 @@
+[
+  {
+    "id": 2,
+    "obra_id": 2,
+    "data": "2026-08-14",
+    "autor": "Guilherme",
+    "descricao": "Inicio da retirada de formas de vigas",
+    "clima": "chuva parcial",
+    "pessoal_presente": "Guilherme e Jaime",
+    "criada": "2026-08-17T23:42:06.708+00:00",
+    "fotos": []
+  },
+  {
+    "id": 3,
+    "obra_id": 2,
+    "data": "2026-08-17",
+    "autor": "Guilherme",
+    "descricao": "Término da remoção das caixas de vigas e remoção de grande parte de pregos e pedaços de vergalhão que tinha nas vigas e pilares",
+    "clima": "nublado",
+    "pessoal_presente": "Guilherme e Jaime",
+    "criada": "2026-08-17T23:43:35.044+00:00",
+    "fotos": []
+  },
+  {
+    "id": 5,
+    "obra_id": 5,
+    "data": "2026-08-17",
+    "autor": "Zé",
+    "descricao": "finalização de massa na área da cozinha",
+    "clima": "nublado",
+    "pessoal_presente": "Denis, Zé",
+    "criada": "2026-08-17T23:54:35.419+00:00",
+    "fotos": []
+  },
+  {
+    "id": 6,
+    "obra_id": 5,
+    "data": "2026-08-17",
+    "autor": "Zé",
+    "descricao": "duas demãos de tinta paredes da cozinha",
+    "clima": "nublado",
+    "pessoal_presente": "Denis, Zé",
+    "criada": "2026-08-17T23:55:08.164+00:00",
+    "fotos": [
+      "https://adrxvlkzcfevrrqxpqkc.supabase.co/storage/v1/object/public/diario-fotos/1787053794091_zdgyd5bac8.jpg"
+    ]
+  },
+  {
+    "id": 23,
+    "obra_id": 10,
+    "data": "2026-08-27",
+    "autor": "Jayme",
+    "descricao": "Isolamento parcial do Piso.\nIsolamento de cabeceiras e criado, Ar condicionado, vistas e rodapés. \nRaspagem da porta do quarto, limpeza e pintura do teto Banheiro. ",
+    "clima": "Sol",
+    "pessoal_presente": "Miguel e Jayme",
+    "criada": "2026-08-27T16:29:57.575+00:00",
+    "fotos": [
+      "https://adrxvlkzcfevrrqxpqkc.supabase.co/storage/v1/object/public/diario-fotos/1787848195845_xbyi5ncg1sj.jpg",
+      "https://adrxvlkzcfevrrqxpqkc.supabase.co/storage/v1/object/public/diario-fotos/1787848195855_umywxsjx55k.jpg",
+      "https://adrxvlkzcfevrrqxpqkc.supabase.co/storage/v1/object/public/diario-fotos/1787848195856_na94sf8trf.jpg",
+      "https://adrxvlkzcfevrrqxpqkc.supabase.co/storage/v1/object/public/diario-fotos/1787848195856_c6045mo49b.jpg",
+      "https://adrxvlkzcfevrrqxpqkc.supabase.co/storage/v1/object/public/diario-fotos/1787848195857_4tw3l4c4cvf.jpg"
+    ]
+  },
+  {
+    "id": 8,
+    "obra_id": 5,
+    "data": "2026-08-18",
+    "autor": "Denis",
+    "descricao": "Arremate negativo gesso área de serviço",
+    "clima": "Ensolarado",
+    "pessoal_presente": "",
+    "criada": "2026-08-18T13:46:50.3+00:00",
+    "fotos": [
+      "https://adrxvlkzcfevrrqxpqkc.supabase.co/storage/v1/object/public/diario-fotos/1787060809259_k8wjvea82vg.jpg"
+    ]
+  },
+  {
+    "id": 9,
+    "obra_id": 5,
+    "data": "2026-08-18",
+    "autor": "Miguel",
+    "descricao": "Primeira demão tinta cozinha e área de serviço",
+    "clima": "Ensolarado",
+    "pessoal_presente": "",
+    "criada": "2026-08-18T13:52:58.433+00:00",
+    "fotos": [
+      "https://adrxvlkzcfevrrqxpqkc.supabase.co/storage/v1/object/public/diario-fotos/1787061176551_1ub81iun7u2i.jpg"
+    ]
+  },
+  {
+    "id": 10,
+    "obra_id": 8,
+    "data": "2026-08-18",
+    "autor": "Denis",
+    "descricao": "Interfone, acionar Condomínio - técnico foi e identificou que a emenda estourou. na troca do fio o eletroduto estava amassado no pisso. precisa abrir para arrumar",
+    "clima": "Nublado",
+    "pessoal_presente": "Denis Maycon",
+    "criada": "2026-08-18T18:08:14.662+00:00",
+    "fotos": []
+  },
+  {
+    "id": 12,
+    "obra_id": 8,
+    "data": "2026-08-20",
+    "autor": "Denis",
+    "descricao": "Reparo interfone de isso 6",
+    "clima": "Nublado",
+    "pessoal_presente": "Denis ",
+    "criada": "2026-08-20T16:47:15.908+00:00",
+    "fotos": [
+      "https://adrxvlkzcfevrrqxpqkc.supabase.co/storage/v1/object/public/diario-fotos/1787244434800_m3mfmg7qfsp.jpg",
+      "https://adrxvlkzcfevrrqxpqkc.supabase.co/storage/v1/object/public/diario-fotos/1787246189697_079h640wvlff.jpg"
+    ]
+  },
+  {
+    "id": 13,
+    "obra_id": 5,
+    "data": "2026-08-20",
+    "autor": "Guilherme",
+    "descricao": "Finalizada fuga sala",
+    "clima": "Nublado",
+    "pessoal_presente": "Denis ",
+    "criada": "2026-08-20T18:31:24.393+00:00",
+    "fotos": []
+  },
+  {
+    "id": 14,
+    "obra_id": 5,
+    "data": "2026-08-20",
+    "autor": "Todos",
+    "descricao": "Limpeza da área comum do apartamento",
+    "clima": "Nublado",
+    "pessoal_presente": "Denis ",
+    "criada": "2026-08-20T18:32:27.049+00:00",
+    "fotos": [
+      "https://adrxvlkzcfevrrqxpqkc.supabase.co/storage/v1/object/public/diario-fotos/1787250744516_ygwvev9qzjh.jpg",
+      "https://adrxvlkzcfevrrqxpqkc.supabase.co/storage/v1/object/public/diario-fotos/1787250765230_eo1u89j9c8r.jpg",
+      "https://adrxvlkzcfevrrqxpqkc.supabase.co/storage/v1/object/public/diario-fotos/1787250784114_32hw4coiv7k.jpg"
+    ]
+  },
+  {
+    "id": 20,
+    "obra_id": 2,
+    "data": "2026-08-24",
+    "autor": "Denis",
+    "descricao": "Junta dilatação parede",
+    "clima": "Ensolarado",
+    "pessoal_presente": "Denis ",
+    "criada": "2026-08-24T15:02:47.527+00:00",
+    "fotos": [
+      "https://adrxvlkzcfevrrqxpqkc.supabase.co/storage/v1/object/public/diario-fotos/1787583766396_a65drfwpkwf.jpg"
+    ]
+  },
+  {
+    "id": 15,
+    "obra_id": 2,
+    "data": "2026-08-20",
+    "autor": "Guilherme Denis",
+    "descricao": "Remoção madeiras e vergalhões",
+    "clima": "Nublado",
+    "pessoal_presente": "Denis ",
+    "criada": "2026-08-20T19:44:53.818+00:00",
+    "fotos": [
+      "https://adrxvlkzcfevrrqxpqkc.supabase.co/storage/v1/object/public/diario-fotos/1787255092770_qavwzdi4o3m.jpg",
+      "https://adrxvlkzcfevrrqxpqkc.supabase.co/storage/v1/object/public/diario-fotos/1787320136399_zp7z8foliwh.jpg",
+      "https://adrxvlkzcfevrrqxpqkc.supabase.co/storage/v1/object/public/diario-fotos/1787320194547_gcsu5x2nbkb.jpg",
+      "https://adrxvlkzcfevrrqxpqkc.supabase.co/storage/v1/object/public/diario-fotos/1787320255941_fawsyr8uf4h.jpg",
+      "https://adrxvlkzcfevrrqxpqkc.supabase.co/storage/v1/object/public/diario-fotos/1787320364872_gfps20d9m9j.jpg",
+      "https://adrxvlkzcfevrrqxpqkc.supabase.co/storage/v1/object/public/diario-fotos/1787320395051_m7w4ri81o0k.jpg"
+    ]
+  },
+  {
+    "id": 19,
+    "obra_id": 2,
+    "data": "2026-08-24",
+    "autor": "Guilherme Denis",
+    "descricao": "Concluído aplicação na área do acesso da caixa d'água e metas que haviam pontos com falha no primeiro nível do telhado",
+    "clima": "Ensolarado",
+    "pessoal_presente": "Denis ",
+    "criada": "2026-08-24T14:35:41.572+00:00",
+    "fotos": [
+      "https://adrxvlkzcfevrrqxpqkc.supabase.co/storage/v1/object/public/diario-fotos/1787666083071_3vqbxrj9wzj.jpg",
+      "https://adrxvlkzcfevrrqxpqkc.supabase.co/storage/v1/object/public/diario-fotos/1787666083072_5tc7jpqz5zc.jpg"
+    ]
+  },
+  {
+    "id": 22,
+    "obra_id": 5,
+    "data": "2026-08-26",
+    "autor": "Denis",
+    "descricao": "Finalização cantoneiras das sancas",
+    "clima": "Nublado",
+    "pessoal_presente": "Denis ",
+    "criada": "2026-08-26T14:21:38.574+00:00",
+    "fotos": [
+      "https://adrxvlkzcfevrrqxpqkc.supabase.co/storage/v1/object/public/diario-fotos/1787754094714_ziirgb31oa.jpg"
+    ]
+  },
+  {
+    "id": 7,
+    "obra_id": 5,
+    "data": "2026-08-17",
+    "autor": "Zé",
+    "descricao": "Primeira mão de massa nas sancas da sala + cortar tabica com lixadeira (perto da churrasqueira), final da cantoneira ",
+    "clima": "nublado",
+    "pessoal_presente": "Denis, Zé",
+    "criada": "2026-08-17T23:55:31.709+00:00",
+    "fotos": [
+      "https://adrxvlkzcfevrrqxpqkc.supabase.co/storage/v1/object/public/diario-fotos/1787053816822_z9buokei6k.jpg",
+      "https://adrxvlkzcfevrrqxpqkc.supabase.co/storage/v1/object/public/diario-fotos/1787837585181_i2b44orhnf8.jpg",
+      "https://adrxvlkzcfevrrqxpqkc.supabase.co/storage/v1/object/public/diario-fotos/1787837600162_f2gciyp30lj.jpg"
+    ]
+  }
+]
