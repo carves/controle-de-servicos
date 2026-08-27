@@ -120,7 +120,10 @@ const AppObras = (function () {
     estado.obraAtual = obra;
     estado.telaAtual = 'obra';
 
-    // Mostrar painel
+    // Mostrar painel (esconde o cabeçalho "Gestão de Obras" e a busca da
+    // lista — eles não fazem sentido enquanto estamos dentro de uma obra)
+    document.getElementById('header-obras').style.display = 'none';
+    document.getElementById('toolbar-obras').style.display = 'none';
     document.getElementById('lista-obras-container').style.display = 'none';
     document.getElementById('painel-obra-container').style.display = 'flex';
 
@@ -137,6 +140,8 @@ const AppObras = (function () {
   function voltarParaLista() {
     estado.telaAtual = 'lista';
     estado.obraAtual = null;
+    document.getElementById('header-obras').style.display = 'flex';
+    document.getElementById('toolbar-obras').style.display = 'flex';
     document.getElementById('lista-obras-container').style.display = 'block';
     document.getElementById('painel-obra-container').style.display = 'none';
   }

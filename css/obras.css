@@ -1269,6 +1269,22 @@
   .resumo-cards {
     grid-template-columns: 1fr;
   }
+
+  /* Busca/filtros da lista de obras: reduzido pela metade no mobile */
+  .toolbar-obras {
+    padding: 8px 12px;
+    gap: 8px;
+  }
+
+  #busca-obras {
+    padding: 6px 10px;
+    font-size: 13px;
+  }
+
+  .filtro-obra-btn {
+    padding: 5px 10px;
+    font-size: 11px;
+  }
 }
 
 @media (max-width: 480px) {
@@ -1300,8 +1316,34 @@
   }
 
   /* Títulos menores no mobile: mais espaço para o conteúdo em si */
+  /* Cabeçalho de seção (ex.: "Diário de Bordo" + botões): tudo numa
+     linha só, compacto, título truncado se precisar */
+  .secao-header {
+    flex-wrap: nowrap;
+    gap: 8px;
+    margin-bottom: 10px;
+  }
+
   .secao-header h3 {
-    font-size: 13px;
+    font-size: 12px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    flex-shrink: 1;
+    min-width: 0;
+  }
+
+  .secao-header-botoes {
+    flex-wrap: nowrap;
+    flex-shrink: 0;
+    gap: 6px;
+  }
+
+  .secao-header-botoes .btn,
+  .secao-header button {
+    padding: 5px 8px;
+    font-size: 10px;
+    white-space: nowrap;
   }
 
   .card-info h3 {
