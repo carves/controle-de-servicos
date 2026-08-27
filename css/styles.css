@@ -176,6 +176,20 @@ html, body {
   color: #fff;
 }
 
+.nav-modulo-acao {
+  background: transparent;
+  border: 1px solid var(--esmeralda);
+  color: var(--esmeralda-claro);
+  cursor: pointer;
+  font-family: inherit;
+  white-space: nowrap;
+}
+
+.nav-modulo-acao:hover {
+  background: var(--esmeralda);
+  color: #fff;
+}
+
 /* ========== PAINEL DE RESUMO ========== */
 .resumo {
   background: var(--preto-card);
@@ -876,6 +890,11 @@ legend {
 
   .form-header h2 { font-size: 14px; }
   .sidebar h1 { font-size: 15px; }
+
+  /* Nav compacta: só ícone nos botões, texto escondido para caber tudo */
+  .nav-modulos { padding: 6px 10px; gap: 6px; }
+  .nav-modulo-btn { padding: 6px 10px; font-size: 12px; }
+  .btn-nova-obra-texto { display: none; }
 }
 
 /* ========== FOTOS (galeria, preview e upload) ========== */
