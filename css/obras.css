@@ -226,40 +226,6 @@
   border-color: var(--esmeralda);
 }
 
-.card-overlay {
-  position: absolute;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  padding: 16px;
-  background: linear-gradient(180deg, transparent 0%, rgba(0,0,0,0.8) 100%);
-  display: flex;
-  align-items: flex-end;
-  opacity: 0;
-  transition: opacity 0.3s ease;
-}
-
-.card-obra-link:hover .card-overlay {
-  opacity: 1;
-}
-
-.btn-entrar {
-  width: 100%;
-  padding: 10px 16px;
-  background: var(--esmeralda);
-  color: var(--preto);
-  border: none;
-  border-radius: var(--raio-sm);
-  font-weight: 600;
-  cursor: pointer;
-  font-size: 13px;
-  transition: var(--trans);
-}
-
-.btn-entrar:hover {
-  background: var(--esmeralda-claro);
-}
-
 .no-data {
   text-align: center;
   padding: 60px 20px;
@@ -932,6 +898,13 @@
   flex: 1;
 }
 
+.material-tags {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-shrink: 0;
+}
+
 .material-body {
   font-size: 13px;
   color: var(--texto-secundario);
@@ -942,11 +915,87 @@
   margin-bottom: 6px;
   display: flex;
   justify-content: space-between;
+  align-items: center;
+}
+
+.material-body input.quick-edit-data {
+  background: var(--preto-surface);
+  border: 1px solid var(--preto-borda);
+  border-radius: var(--raio-sm);
+  color: var(--texto-primario);
+  font-size: 13px;
+  padding: 4px 6px;
 }
 
 .material-footer {
   display: flex;
   gap: 8px;
+}
+
+/* Toggle "Comprar" — apagado por padrão, acende vermelho quando ligado.
+   Usado tanto no card (edição rápida) quanto dentro do form de material. */
+.switch-comprar {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  cursor: pointer;
+  font-size: 10px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: var(--texto-secundario);
+  user-select: none;
+  padding: 6px 2px;
+  margin: -6px -2px;
+}
+
+.switch-comprar input {
+  position: absolute;
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+.switch-track {
+  position: relative;
+  width: 32px;
+  height: 18px;
+  border-radius: 99px;
+  background: rgba(100, 116, 139, 0.15);
+  border: 1px solid rgba(100, 116, 139, 0.3);
+  transition: var(--trans);
+  flex-shrink: 0;
+}
+
+.switch-knob {
+  position: absolute;
+  top: 1px;
+  left: 1px;
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  background: #94a3b8;
+  transition: var(--trans);
+}
+
+.switch-comprar.ativo .switch-track {
+  background: rgba(239, 68, 68, 0.2);
+  border-color: rgba(239, 68, 68, 0.5);
+}
+
+.switch-comprar.ativo .switch-knob {
+  transform: translateX(14px);
+  background: #ef4444;
+  box-shadow: 0 0 6px rgba(239, 68, 68, 0.6);
+}
+
+.switch-comprar.ativo .switch-label {
+  color: #fca5a5;
+}
+
+/* Dentro do form, o toggle vira uma linha própria, alinhada como os outros campos */
+#form-material .switch-comprar {
+  margin: 4px 0 8px;
 }
 
 /* ===== RESUMO ===== */

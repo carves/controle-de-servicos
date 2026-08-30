@@ -273,7 +273,7 @@ const StoreObras = (function () {
 
   // ===== MATERIAIS =====
   async function obterMateriais(obraId) {
-    const url = SUPABASE_URL + '/rest/v1/materiais_obra?obra_id=eq.' + obraId + '&order=data_pedido.asc';
+    const url = SUPABASE_URL + '/rest/v1/materiais_obra?obra_id=eq.' + obraId + '&order=data_entrega_prevista.asc';
     try {
       const dados = await chamar(url, { headers: HEADERS });
       return dados || [];
@@ -287,12 +287,8 @@ const StoreObras = (function () {
     const corpo = {
       obra_id: obraId,
       descricao: dados.descricao,
-      quantidade: parseFloat(dados.quantidade) || 0,
-      unidade: dados.unidade || '',
-      fornecedor: dados.fornecedor || '',
-      data_pedido: dados.data_pedido || null,
       data_entrega_prevista: dados.data_entrega_prevista || null,
-      valor: parseFloat(dados.valor) || 0,
+      precisa_comprar: !!dados.precisa_comprar,
       status: dados.status || 'Planejado',
       observacoes: dados.observacoes || '',
       fotos: dados.fotos || []

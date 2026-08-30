@@ -77,22 +77,22 @@ const AppObras = (function () {
             <span class="status-badge cor-${getCorStatus(obra.status)}">${obra.status}</span>
           </div>
         </div>
-        <div class="card-overlay">
-          <button class="btn-entrar" data-acao="abrir" data-id="${obra.id}">Acessar Obra →</button>
-        </div>
       </div>
     `).join('');
 
     container.innerHTML = `<div class="galeria-obras">${html}</div>`;
 
-    // Eventos
-    container.querySelectorAll('[data-acao]').forEach(btn => {
+    // Clique em qualquer lugar do card abre a obra direto — sem precisar
+    // tocar duas vezes (hover pra revelar o botão, depois clicar nele).
+    // O botão de editar continua isolado, sem abrir a obra.
+    container.querySelectorAll('.card-obra-link').forEach(card => {
+      card.addEventListener('click', () => abrirObra(parseInt(card.dataset.id)));
+    });
+
+    container.querySelectorAll('.btn-editar-card').forEach(btn => {
       btn.addEventListener('click', (e) => {
-        const acao = e.target.dataset.acao;
-        const id = parseInt(e.target.dataset.id);
-        if (acao === 'abrir') abrirObra(id);
-        else if (acao === 'editar') abrirFormularioObra(id);
-        else if (acao === 'deletar') deletarObraConfirma(id);
+        e.stopPropagation();
+        abrirFormularioObra(parseInt(btn.dataset.id));
       });
     });
   }
@@ -1069,15 +1069,19 @@ const AppObras = (function () {
       <div class="material-item" data-id="${mat.id}">
         <div class="material-header">
           <h4>${Utils.escapeHtml(mat.descricao)}</h4>
-          <span class="status-badge cor-${getCorStatus(mat.status)}">${mat.status}</span>
+          <div class="material-tags">
+            <span class="status-badge cor-${getCorStatus(mat.status)}">${mat.status}</span>
+            <label class="switch-comprar ${mat.precisa_comprar ? 'ativo' : ''}">
+              <input type="checkbox" class="quick-edit-comprar" data-id="${mat.id}" ${mat.precisa_comprar ? 'checked' : ''}>
+              <span class="switch-track"><span class="switch-knob"></span></span>
+              <span class="switch-label">Comprar</span>
+            </label>
+          </div>
         </div>
         <div class="material-body">
-          <p><strong>Qtd:</strong> ${mat.quantidade} ${Utils.escapeHtml(mat.unidade || '')}</p>
-          <p><strong>Fornecedor:</strong> ${Utils.escapeHtml(mat.fornecedor || '—')}</p>
-          <p><strong>Valor:</strong> ${Utils.brl(mat.valor)}</p>
-          <p><strong>Data Pedido:</strong> ${Utils.dateBR(mat.data_pedido) || '—'}</p>
-          <p><strong>Entrega Prevista:</strong> ${Utils.dateBR(mat.data_entrega_prevista) || '—'}</p>
-          ${mat.data_entrega ? `<p><strong>Entregue em:</strong> ${Utils.dateBR(mat.data_entrega)}</p>` : ''}
+          <p><strong>Levar em:</strong>
+            <input type="date" class="quick-edit-data" data-campo="data_entrega_prevista" data-id="${mat.id}" value="${mat.data_entrega_prevista || ''}">
+          </p>
           ${mat.observacoes ? `<p><strong>Obs:</strong> ${Utils.escapeHtml(mat.observacoes)}</p>` : ''}
           ${Utils.htmlGaleriaFotos(mat.fotos)}
         </div>
@@ -1099,17 +1103,43 @@ const AppObras = (function () {
         else if (acao === 'deletar-material') deletarMaterialConfirma(id);
       });
     });
+
+    // Toggle rápido "Comprar" direto no card — sem abrir modal
+    container.querySelectorAll('.quick-edit-comprar').forEach(chk => {
+      chk.addEventListener('change', async () => {
+        const id = parseInt(chk.dataset.id);
+        const label = chk.closest('.switch-comprar');
+        try {
+          await StoreObras.atualizarMaterial(id, { precisa_comprar: chk.checked });
+          label.classList.toggle('ativo', chk.checked);
+          Utils.toast(chk.checked ? 'Marcado para comprar' : 'Marcado como já em posse');
+        } catch (e) {
+          chk.checked = !chk.checked;
+          Utils.toast('Erro ao atualizar');
+        }
+      });
+    });
+
+    // Data "Levar em" editável direto no card
+    container.querySelectorAll('.quick-edit-data').forEach(el => {
+      el.addEventListener('change', async () => {
+        const id = parseInt(el.dataset.id);
+        const campo = el.dataset.campo;
+        try {
+          await StoreObras.atualizarMaterial(id, { [campo]: el.value || null });
+          Utils.toast('Data atualizada');
+        } catch (e) {
+          Utils.toast('Erro ao salvar data');
+        }
+      });
+    });
   }
 
   async function abrirFormularioMaterial(id = null) {
     let dados = {
       descricao: '',
-      quantidade: '',
-      unidade: '',
-      fornecedor: '',
-      data_pedido: '',
       data_entrega_prevista: '',
-      valor: '',
+      precisa_comprar: false,
       status: 'Planejado',
       observacoes: '',
       fotos: []
@@ -1129,20 +1159,19 @@ const AppObras = (function () {
         </div>
         <form id="form-material">
           <input type="text" id="form-material-desc" placeholder="Descrição do material" value="${Utils.escapeHtml(dados.descricao)}" required>
-          <input type="number" id="form-material-qtd" placeholder="Quantidade" value="${dados.quantidade || ''}" step="0.01">
-          <input type="text" id="form-material-unidade" placeholder="Unidade (m, kg, unid...)" value="${Utils.escapeHtml(dados.unidade || '')}">
-          <input type="text" id="form-material-fornecedor" placeholder="Fornecedor" value="${Utils.escapeHtml(dados.fornecedor || '')}">
-          <label>Data Pedido</label>
-          <input type="date" id="form-material-pedido" value="${dados.data_pedido || ''}">
-          <label>Entrega Prevista</label>
+          <label>Levar em (data que precisa estar na obra)</label>
           <input type="date" id="form-material-entrega" value="${dados.data_entrega_prevista || ''}">
-          <input type="number" id="form-material-valor" placeholder="Valor" value="${dados.valor || ''}" step="0.01">
           <select id="form-material-status">
             <option value="Planejado" ${dados.status === 'Planejado' ? 'selected' : ''}>Planejado</option>
             <option value="Pedido" ${dados.status === 'Pedido' ? 'selected' : ''}>Pedido</option>
             <option value="Entregue" ${dados.status === 'Entregue' ? 'selected' : ''}>Entregue</option>
             <option value="Cancelado" ${dados.status === 'Cancelado' ? 'selected' : ''}>Cancelado</option>
           </select>
+          <label class="switch-comprar ${dados.precisa_comprar ? 'ativo' : ''}" id="label-form-material-comprar">
+            <input type="checkbox" id="form-material-comprar" ${dados.precisa_comprar ? 'checked' : ''}>
+            <span class="switch-track"><span class="switch-knob"></span></span>
+            <span class="switch-label">Precisa comprar</span>
+          </label>
           <textarea id="form-material-obs" placeholder="Observações">${Utils.escapeHtml(dados.observacoes || '')}</textarea>
 
           <label class="campo-fotos-label">📷 Fotos</label>
@@ -1163,18 +1192,20 @@ const AppObras = (function () {
 
     const seletorFotos = criarSeletorFotos(dados.fotos, 'form-material-fotos', 'preview-fotos-material');
 
+    // Toggle "Precisa comprar" dentro do form — só liga a cor, o valor real
+    // é lido no submit a partir do checkbox.
+    document.getElementById('form-material-comprar').addEventListener('change', (e) => {
+      document.getElementById('label-form-material-comprar').classList.toggle('ativo', e.target.checked);
+    });
+
     document.getElementById('form-material').addEventListener('submit', async (e) => {
       e.preventDefault();
       const submitBtn = e.target.querySelector('.btn-salvar');
 
       const formDados = {
         descricao: document.getElementById('form-material-desc').value,
-        quantidade: document.getElementById('form-material-qtd').value,
-        unidade: document.getElementById('form-material-unidade').value,
-        fornecedor: document.getElementById('form-material-fornecedor').value,
-        data_pedido: document.getElementById('form-material-pedido').value || null,
         data_entrega_prevista: document.getElementById('form-material-entrega').value || null,
-        valor: document.getElementById('form-material-valor').value,
+        precisa_comprar: document.getElementById('form-material-comprar').checked,
         status: document.getElementById('form-material-status').value,
         observacoes: document.getElementById('form-material-obs').value
       };
