@@ -1,0 +1,16 @@
+[
+  {
+    "id": 1,
+    "obra_id": 2,
+    "descricao": "disco de corte",
+    "quantidade": 3,
+    "unidade": "un",
+    "fornecedor": "",
+    "data_pedido": "2026-08-18",
+    "data_entrega_prevista": "2026-08-18",
+    "valor": 0,
+    "status": "Entregue",
+    "observacoes": "",
+    "fotos": []
+  }
+]
