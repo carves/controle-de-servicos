@@ -326,7 +326,7 @@ const AppObras = (function () {
           <input type="text" id="form-diario-pessoal" placeholder="Pessoal presente" value="${Utils.escapeHtml(dados.pessoal_presente || '')}">
 
           <label class="campo-fotos-label">📷 Fotos</label>
-          <input type="file" id="form-diario-fotos" accept="image/*" multiple>
+          <div id="form-diario-fotos"></div>
           <div id="preview-fotos" class="preview-fotos"></div>
 
           <div class="form-botoes">
@@ -759,7 +759,7 @@ const AppObras = (function () {
 
           <label class="campo-fotos-label">📷 Fotos</label>
           <div id="preview-fotos-revisao" class="preview-fotos"></div>
-          <input type="file" id="form-revisao-fotos" accept="image/*" multiple>
+          <div id="form-revisao-fotos"></div>
 
           <div class="form-botoes">
             <button type="submit" class="btn btn-salvar">Salvar</button>
@@ -989,7 +989,7 @@ const AppObras = (function () {
 
           <label class="campo-fotos-label">📷 Fotos</label>
           <div id="preview-fotos-atividade" class="preview-fotos"></div>
-          <input type="file" id="form-atividade-fotos" accept="image/*" multiple>
+          <div id="form-atividade-fotos"></div>
 
           <div class="form-botoes">
             <button type="submit" class="btn btn-salvar">Salvar</button>
@@ -1176,7 +1176,7 @@ const AppObras = (function () {
 
           <label class="campo-fotos-label">📷 Fotos</label>
           <div id="preview-fotos-material" class="preview-fotos"></div>
-          <input type="file" id="form-material-fotos" accept="image/*" multiple>
+          <div id="form-material-fotos"></div>
 
           <div class="form-botoes">
             <button type="submit" class="btn btn-salvar">Salvar</button>
@@ -1364,7 +1364,7 @@ const AppObras = (function () {
 
           <label class="campo-fotos-label">🖼️ Foto de Apresentação</label>
           <div id="preview-foto-capa" class="preview-foto-capa"></div>
-          <input type="file" id="form-obra-foto-arquivo" accept="image/*">
+          <div id="form-obra-foto-arquivo"></div>
 
           <input type="text" id="form-obra-responsavel" placeholder="Responsável da obra" value="${Utils.escapeHtml(dados.responsavel || '')}">
           <label>Data Início</label>
@@ -1391,12 +1391,25 @@ const AppObras = (function () {
 
     // ===== Preview da foto de apresentação =====
     let fotoAtual = dados.foto || '';
+    let arquivoCapaEscolhido = null;
     const previewCapa = document.getElementById('preview-foto-capa');
-    const inputFotoArquivo = document.getElementById('form-obra-foto-arquivo');
+    const containerFotoArquivo = document.getElementById('form-obra-foto-arquivo');
+    containerFotoArquivo.innerHTML = `
+      <div class="seletor-fotos-botoes">
+        <button type="button" class="btn-foto-opcao btn-foto-camera">📷 Câmera</button>
+        <button type="button" class="btn-foto-opcao btn-foto-galeria">🖼️ Galeria</button>
+      </div>
+      <input type="file" accept="image/*" capture="environment" hidden class="input-foto-camera">
+      <input type="file" accept="image/*" hidden class="input-foto-galeria">
+    `;
+    const inputCapaCamera = containerFotoArquivo.querySelector('.input-foto-camera');
+    const inputCapaGaleria = containerFotoArquivo.querySelector('.input-foto-galeria');
+    containerFotoArquivo.querySelector('.btn-foto-camera').addEventListener('click', () => inputCapaCamera.click());
+    containerFotoArquivo.querySelector('.btn-foto-galeria').addEventListener('click', () => inputCapaGaleria.click());
 
     function renderizarPreviewCapa() {
-      if (inputFotoArquivo.files[0]) {
-        const urlLocal = URL.createObjectURL(inputFotoArquivo.files[0]);
+      if (arquivoCapaEscolhido) {
+        const urlLocal = URL.createObjectURL(arquivoCapaEscolhido);
         previewCapa.innerHTML = `
           <div class="preview-foto-item preview-foto-nova">
             <img src="${urlLocal}" alt="Nova foto de capa" class="preview-foto-clicavel" data-url="${urlLocal}">
@@ -1412,7 +1425,6 @@ const AppObras = (function () {
         `;
         document.getElementById('btn-remover-foto-capa').addEventListener('click', () => {
           fotoAtual = '';
-          inputFotoArquivo.value = '';
           renderizarPreviewCapa();
         });
       } else {
@@ -1424,13 +1436,19 @@ const AppObras = (function () {
       });
     }
     renderizarPreviewCapa();
-    inputFotoArquivo.addEventListener('change', renderizarPreviewCapa);
+    function onCapaEscolhida(input) {
+      arquivoCapaEscolhido = input.files[0] || arquivoCapaEscolhido;
+      input.value = '';
+      renderizarPreviewCapa();
+    }
+    inputCapaCamera.addEventListener('change', () => onCapaEscolhida(inputCapaCamera));
+    inputCapaGaleria.addEventListener('change', () => onCapaEscolhida(inputCapaGaleria));
 
     document.getElementById('form-obra').addEventListener('submit', async (e) => {
       e.preventDefault();
 
       const submitBtn = e.target.querySelector('.btn-salvar');
-      const arquivoNovo = inputFotoArquivo.files[0];
+      const arquivoNovo = arquivoCapaEscolhido;
 
       try {
         let urlFoto = fotoAtual;

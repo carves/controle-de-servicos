@@ -124,12 +124,40 @@ const Utils = (function () {
 
   // ===== GALERIA DE FOTOS (compartilhado por Serviços e Obras) =====
 
-  // Abre uma foto em tamanho grande (lightbox)
+  // Baixa uma foto já hospedada (Supabase Storage) para o dispositivo.
+  // Busca como blob pra forçar o download em vez de só abrir a imagem numa
+  // aba nova; se o fetch falhar (rede, CORS), cai pra abrir em nova aba —
+  // dali a pessoa ainda consegue salvar via long-press.
+  async function baixarImagem(url, nomeSugerido) {
+    try {
+      const resposta = await fetch(url);
+      const blob = await resposta.blob();
+      const urlLocal = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = urlLocal;
+      a.download = nomeSugerido || url.split('/').pop() || 'foto.jpg';
+      document.body.appendChild(a); a.click(); document.body.removeChild(a);
+      setTimeout(() => URL.revokeObjectURL(urlLocal), 1000);
+    } catch (e) {
+      window.open(url, '_blank');
+    }
+  }
+
+  // Abre uma foto em tamanho grande (lightbox). Além do botão de baixar,
+  // como é um <img> de verdade, o long-press nativo do celular (Salvar
+  // imagem / Adicionar a Fotos) também funciona sem precisar de nada extra.
   function abrirLightbox(url) {
     const overlay = document.createElement('div');
     overlay.className = 'lightbox-overlay';
-    overlay.innerHTML = `<img src="${escapeHtml(url)}" alt="Foto ampliada">`;
-    overlay.addEventListener('click', () => overlay.remove());
+    overlay.innerHTML = `
+      <img src="${escapeHtml(url)}" alt="Foto ampliada">
+      <button type="button" class="lightbox-baixar">⬇️ Baixar foto</button>
+    `;
+    overlay.addEventListener('click', (e) => {
+      if (e.target.closest('.lightbox-baixar')) return;
+      overlay.remove();
+    });
+    overlay.querySelector('.lightbox-baixar').addEventListener('click', () => baixarImagem(url));
     document.body.appendChild(overlay);
   }
 
@@ -150,18 +178,36 @@ const Utils = (function () {
     });
   }
 
-  // Cria um seletor de fotos reutilizável (preview + upload + remoção) dentro
-  // de um formulário. Permite escolher fotos em vários lotes (abre o seletor
-  // de arquivos quantas vezes quiser, sempre somando ao que já foi escolhido
-  // — nada se perde e não precisa salvar entre uma seleção e outra).
+  // Cria um seletor de fotos reutilizável (botões Câmera/Galeria + preview +
+  // upload + remoção) dentro de um formulário. `idContainer` é uma <div>
+  // vazia onde os botões são montados — não um <input> (o componente cria
+  // os inputs escondidos sozinho, um forçando a câmera via `capture`, outro
+  // sem capture pra abrir a galeria/arquivos, evitando que toda foto tirada
+  // pelo app vá parar na galeria do celular).
+  // Permite escolher fotos em vários lotes (abre o seletor de arquivos
+  // quantas vezes quiser, sempre somando ao que já foi escolhido — nada se
+  // perde e não precisa salvar entre uma seleção e outra).
   // Chame fotosFinais() no submit para obter a lista de URLs final (fotos
   // antigas mantidas + novas já comprimidas e enviadas).
   // `storeModule` precisa ter uploadFotos(arquivos, bucket).
-  function criarSeletorFotos(fotosIniciais, idInput, idPreview, storeModule, bucket = 'diario-fotos') {
+  function criarSeletorFotos(fotosIniciais, idContainer, idPreview, storeModule, bucket = 'diario-fotos') {
     let fotosExistentes = [...(fotosIniciais || [])];
     let arquivosNovos = []; // acumula File objects de todas as seleções feitas
-    const input = document.getElementById(idInput);
+    const container = document.getElementById(idContainer);
     const preview = document.getElementById(idPreview);
+
+    container.innerHTML = `
+      <div class="seletor-fotos-botoes">
+        <button type="button" class="btn-foto-opcao btn-foto-camera">📷 Câmera</button>
+        <button type="button" class="btn-foto-opcao btn-foto-galeria">🖼️ Galeria</button>
+      </div>
+      <input type="file" accept="image/*" capture="environment" hidden class="input-foto-camera">
+      <input type="file" accept="image/*" multiple hidden class="input-foto-galeria">
+    `;
+    const inputCamera = container.querySelector('.input-foto-camera');
+    const inputGaleria = container.querySelector('.input-foto-galeria');
+    container.querySelector('.btn-foto-camera').addEventListener('click', () => inputCamera.click());
+    container.querySelector('.btn-foto-galeria').addEventListener('click', () => inputGaleria.click());
 
     function render() {
       const existentesHtml = fotosExistentes.map((url, i) => `
@@ -203,11 +249,13 @@ const Utils = (function () {
 
     // Cada seleção SOMA ao que já estava escolhido, em vez de substituir —
     // assim dá pra abrir o seletor várias vezes (câmera, depois galeria, etc.)
-    input.addEventListener('change', () => {
+    function onArquivosEscolhidos(input) {
       arquivosNovos = arquivosNovos.concat(Array.from(input.files || []));
       input.value = ''; // limpa para permitir escolher os mesmos arquivos de novo se precisar
       render();
-    });
+    }
+    inputCamera.addEventListener('change', () => onArquivosEscolhidos(inputCamera));
+    inputGaleria.addEventListener('change', () => onArquivosEscolhidos(inputGaleria));
 
     return {
       async fotosFinais() {
@@ -238,7 +286,7 @@ const Utils = (function () {
 
   return {
     brl, dateBR, today, escapeHtml, normalize, onlyDigits, waNumber, copy, downloadFile,
-    comprimirImagem, abrirLightbox, htmlGaleriaFotos, ativarGaleriaFotos, criarSeletorFotos,
+    comprimirImagem, abrirLightbox, baixarImagem, htmlGaleriaFotos, ativarGaleriaFotos, criarSeletorFotos,
     toast
   };
 })();

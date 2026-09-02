@@ -928,15 +928,29 @@ legend {
   margin: 12px 0 6px;
 }
 
-#form-servico-fotos {
-  width: 100%;
+.seletor-fotos-botoes {
+  display: flex;
+  gap: 8px;
+}
+
+.btn-foto-opcao {
+  flex: 1;
   padding: 10px;
   background: var(--preto-surface);
   border: 1px dashed var(--preto-borda2);
   border-radius: var(--raio);
   color: var(--texto-secundario);
   font-size: 13px;
+  font-weight: 500;
   cursor: pointer;
+  transition: var(--trans);
+}
+
+.btn-foto-opcao:hover,
+.btn-foto-opcao:active {
+  border-color: var(--esmeralda);
+  border-style: solid;
+  color: var(--texto-primario);
 }
 
 .preview-fotos {
@@ -1000,8 +1014,10 @@ legend {
   inset: 0;
   background: rgba(0, 0, 0, 0.9);
   display: flex;
+  flex-direction: column;
   align-items: center;
   justify-content: center;
+  gap: 14px;
   z-index: 9999;
   cursor: zoom-out;
   padding: 20px;
@@ -1009,9 +1025,26 @@ legend {
 
 .lightbox-overlay img {
   max-width: 100%;
-  max-height: 100%;
+  max-height: calc(100% - 56px);
   border-radius: var(--raio);
   box-shadow: var(--sombra-lg);
+  cursor: default;
+}
+
+.lightbox-baixar {
+  padding: 10px 20px;
+  background: var(--esmeralda);
+  color: var(--preto);
+  border: none;
+  border-radius: var(--raio-sm);
+  font-weight: 600;
+  font-size: 14px;
+  cursor: pointer;
+  flex-shrink: 0;
+}
+
+.lightbox-baixar:hover {
+  background: var(--esmeralda-claro);
 }
 
 /* ========== UTILIDADES ========== */

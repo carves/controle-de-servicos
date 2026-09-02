@@ -323,7 +323,7 @@ const App = (function () {
           <fieldset>
             <legend>Fotos</legend>
             <div id="preview-fotos-servico" class="preview-fotos"></div>
-            <input type="file" id="form-servico-fotos" accept="image/*" multiple>
+            <div id="form-servico-fotos"></div>
           </fieldset>
 
           <div class="form-botoes">
