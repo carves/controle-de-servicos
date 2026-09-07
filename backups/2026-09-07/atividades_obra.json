@@ -1,0 +1,163 @@
+[
+  {
+    "id": 1,
+    "obra_id": 9,
+    "titulo": "Reparo e pintura - sex a tarde",
+    "descricao": "Kit\nAc3\nTela para trinca\nTinta \nCorante preto\nEscada laranja material isolamento",
+    "responsavel": "Maycon",
+    "data_prevista": "2026-08-21",
+    "status": "Planejado",
+    "prioridade": "Baixa",
+    "fotos": []
+  },
+  {
+    "id": 2,
+    "obra_id": 5,
+    "titulo": "📘Acabamento atrás da porta de correr.",
+    "descricao": null,
+    "responsavel": "",
+    "data_prevista": null,
+    "status": "Planejado",
+    "prioridade": "Média",
+    "fotos": []
+  },
+  {
+    "id": 3,
+    "obra_id": 5,
+    "titulo": "📘Banheiro Subir luminárias.",
+    "descricao": null,
+    "responsavel": "",
+    "data_prevista": null,
+    "status": "Planejado",
+    "prioridade": "Média",
+    "fotos": []
+  },
+  {
+    "id": 4,
+    "obra_id": 5,
+    "titulo": "📘Reforço do corte Barra de Led",
+    "descricao": null,
+    "responsavel": "",
+    "data_prevista": null,
+    "status": "Planejado",
+    "prioridade": "Média",
+    "fotos": []
+  },
+  {
+    "id": 5,
+    "obra_id": 5,
+    "titulo": "📘 Tampas das tomadas.",
+    "descricao": null,
+    "responsavel": "",
+    "data_prevista": null,
+    "status": "Planejado",
+    "prioridade": "Média",
+    "fotos": []
+  },
+  {
+    "id": 6,
+    "obra_id": 5,
+    "titulo": "🛑Verificar sobre a compra dos sanitários.",
+    "descricao": null,
+    "responsavel": "",
+    "data_prevista": null,
+    "status": "Planejado",
+    "prioridade": "Média",
+    "fotos": []
+  },
+  {
+    "id": 7,
+    "obra_id": 5,
+    "titulo": "📘Suíte 1: Reparo acima da porta. (Passar Massa)",
+    "descricao": null,
+    "responsavel": "",
+    "data_prevista": null,
+    "status": "Planejado",
+    "prioridade": "Média",
+    "fotos": []
+  },
+  {
+    "id": 8,
+    "obra_id": 5,
+    "titulo": "📘Finalizar parede atrás da Porta.",
+    "descricao": null,
+    "responsavel": "",
+    "data_prevista": null,
+    "status": "Planejado",
+    "prioridade": "Média",
+    "fotos": []
+  },
+  {
+    "id": 11,
+    "obra_id": 5,
+    "titulo": "📘Quarto da empregada: Subir Luminária.",
+    "descricao": null,
+    "responsavel": "",
+    "data_prevista": null,
+    "status": "Planejado",
+    "prioridade": "Média",
+    "fotos": []
+  },
+  {
+    "id": 12,
+    "obra_id": 5,
+    "titulo": "📘Fazer Acabamento na Janela.",
+    "descricao": null,
+    "responsavel": "",
+    "data_prevista": null,
+    "status": "Planejado",
+    "prioridade": "Média",
+    "fotos": []
+  },
+  {
+    "id": 10,
+    "obra_id": 5,
+    "titulo": "corredor área intima - Reparo no Spot do meio.",
+    "descricao": "",
+    "responsavel": "",
+    "data_prevista": null,
+    "status": "Planejado",
+    "prioridade": "Média",
+    "fotos": []
+  },
+  {
+    "id": 13,
+    "obra_id": 5,
+    "titulo": "🛑Comprar mais cantoneiras para acamento sanca da sala de Tv",
+    "descricao": "",
+    "responsavel": "Jaime",
+    "data_prevista": "2026-08-20",
+    "status": "Em Andamento",
+    "prioridade": "Média",
+    "fotos": []
+  },
+  {
+    "id": 47,
+    "obra_id": 16,
+    "titulo": "Reparos do telhado",
+    "descricao": "Telhado simples\nTelha tp40 - 11pç de 5m = R$2300 entregue\nParafusos - mil = R$300\nTinta emborrachada - 1 balde\nPu30 - 5 bisnagas\n\nTelhado novo sanduiche\nTp40 30mm eps sem forro - 22pç 5m = R$14 mil \nParafusos - mil = R$300\nPu30 - 5 bisnagas",
+    "responsavel": "Denis",
+    "data_prevista": null,
+    "status": "Planejado",
+    "prioridade": "Alta",
+    "fotos": [
+      "https://adrxvlkzcfevrrqxpqkc.supabase.co/storage/v1/object/public/diario-fotos/1788288488682_f2q47xbnc74.jpg",
+      "https://adrxvlkzcfevrrqxpqkc.supabase.co/storage/v1/object/public/diario-fotos/1788288488683_0tzhm0xrjuwq.jpg",
+      "https://adrxvlkzcfevrrqxpqkc.supabase.co/storage/v1/object/public/diario-fotos/1788288488684_4cpr51q5j89.jpg",
+      "https://adrxvlkzcfevrrqxpqkc.supabase.co/storage/v1/object/public/diario-fotos/1788288488684_y9ahebyrc8b.jpg"
+    ]
+  },
+  {
+    "id": 48,
+    "obra_id": 16,
+    "titulo": "Recuperação levante motor elevador no telhado",
+    "descricao": "\nRevestimento lateral chapa alumínio - R$350\nTampa -\n            Duas dobradiças portão grandes h R$\n            Perfis metálicos - já tem no porão\n            Telha - R$208\n            Pu30 2 bisnagas -R$\n            Parafuso para stellframe 100un - R$\n            Trinco grande para cadeado zincado - R$",
+    "responsavel": "Denis",
+    "data_prevista": null,
+    "status": "Planejado",
+    "prioridade": "Alta",
+    "fotos": [
+      "https://adrxvlkzcfevrrqxpqkc.supabase.co/storage/v1/object/public/diario-fotos/1788288459391_iisngc5c3.jpg"
+    ]
+  }
+]
