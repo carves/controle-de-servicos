@@ -1,0 +1,29 @@
+[
+  {
+    "id": 7,
+    "cliente": "Cond. Carmel",
+    "telefone": "",
+    "endereco": "Pioneiros",
+    "tipo": "Limpeza de Churrasqueiea",
+    "descricao": "Limpeza da churrasqueira, Polimento externo e troca de botões de acionamento. ",
+    "observacoes": "Os botões ainda não foram trocados.",
+    "datasolicitacao": "2026-09-15",
+    "datavisita": "2026-09-19",
+    "dataorcamento": null,
+    "datafinalizacao": null,
+    "status": "Aguardando Material",
+    "prioridade": "Média",
+    "valor": 0,
+    "formapagamento": "",
+    "pago": false,
+    "recebidopor": "",
+    "criada": "2026-09-20T21:44:40.533+00:00",
+    "atualizada": "2026-09-20T21:44:39.771455+00:00",
+    "fotos": [
+      "https://adrxvlkzcfevrrqxpqkc.supabase.co/storage/v1/object/public/servicos-fotos/1789940678834_r1wyqqaye3i.jpg",
+      "https://adrxvlkzcfevrrqxpqkc.supabase.co/storage/v1/object/public/servicos-fotos/1789940678835_0r6fkja8xjt.jpg",
+      "https://adrxvlkzcfevrrqxpqkc.supabase.co/storage/v1/object/public/servicos-fotos/1789940678836_hbb42xfjr66.jpg",
+      "https://adrxvlkzcfevrrqxpqkc.supabase.co/storage/v1/object/public/servicos-fotos/1789940678837_8by5uy5x6n4.jpg"
+    ]
+  }
+]
